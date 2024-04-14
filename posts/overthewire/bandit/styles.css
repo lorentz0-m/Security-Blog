@@ -144,13 +144,17 @@ pre {
 	border-left: 0.4rem solid var(--dim-cyan);
 }
 
-.level-links a {
+.page-content a {
+	color: var(--white);
+}
+
+.page-content > .level-links a {
 	text-decoration: none;
 	color: var(--white);
 	font-weight: bold;
 }
 
-.level-links a:hover {
+.page-content > .level-links a:hover {
 	color: var(--light-blue);
 }
 
