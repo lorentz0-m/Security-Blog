@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Bandit Level 2 Write-up</title>
+		<link rel="stylesheet" href="../../styles.css">
+		<link rel="stylesheet" href="../../../shared.css">
+	</head>
+
+	<body>
+		<div class="header">
+			<div class="profile">
+				<div class="username"><a href="../../../index.html">Lorentz0-m</a></div>
+				<div class="short-description">CTF write-ups and security related topics</div>
+			</div>
+
+			<ul>
+				<li><a href="../../../index.html">Home</a></li>
+				<li><a href="../../all_articles.html">All Posts</a></li>
+				<li><a href="../../../about.html">About</a></li>
+			</ul>
+		</div>
+
+		<div class="page-content">
+			<h1 class="title">OverTheWire Bandit Level 2 Write-up</h1>
+
+			<div class="article-info">
+				<div><img class="svg" src="../../../media/icons/calendar-days-solid.svg" alt="an icon of a calendar"> Updated: 14/04/2024</div>
+				<div>| <img class="svg" src="../../../media/icons/clock-solid.svg" alt="an icon of a clock"> 0.5 min read</div>
+			</div>
+
+			<hr>
+
+			<p>
+				The file stored in our home directory this time happens to have spaces in its
+				filename, which would normally cause a problem, but you can easily circumvent
+				it by wrapping the entire filename in quotes/double-quotes, or escaping each space
+				character with a backslash.
+			</p>
+
+			<div class="notes-and-tips">
+				<strong>tip:</strong> most shells have auto-completion enabled, meaning that you only have to type
+				part of a filename, and by hitting tab the shell will complete the name for you,
+				saving you lots of valuable time
+			</div>
+
+			Method 1:
+			
+			<pre>
+				<code>
+					bandit2@bandit:~$ cat "spaces in this filename"
+					aBZ0W5EmUfAf7kHTQeOwd8bauFJ2lAiG
+				</code>
+			</pre>
+
+			Method 2:
+			
+			<pre>
+				<code>
+					bandit2@bandit:~$ cat spaces\ in\ this\ filename
+					aBZ0W5EmUfAf7kHTQeOwd8bauFJ2lAiG
+				</code>
+			</pre>
+
+			Onto level 3!
+
+			<hr>
+
+			<div class="level-links">
+				<a href="./level1.html">&lt;-Previous Level</a>
+				<a href="./level3.html">Next Level-&gt;</a>
+			</div>
+		</div>
+
+		<div class="footer">
+			Copyright &#169; 2024 Lorentz0-m 
+		</div>
+	</body>
+</html>
