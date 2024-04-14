@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Bandit Level 4 Write-up</title>
+		<link rel="stylesheet" href="styles.css">
+	</head>
+
+	<body>
+		<div class="header">
+			<div class="profile">
+				<div class="username"><a href="../../../index.html">Lorentz0-m</a></div>
+				<div class="short-description">CTF write-ups and security related topics</div>
+			</div>
+
+			<ul>
+				<li><a href="../../../index.html">Home</a></li>
+				<li><a href="../../all_articles.html">All Posts</a></li>
+				<li><a href="../../../about.html">About</a></li>
+			</ul>
+		</div>
+
+		<div class="page-content">
+			<h1 class="title">OverTheWire Bandit Level 4 Write-up</h1>
+
+			<div class="info">
+				<div><img src="../../../media/icons/calendar-days-solid.svg" alt="an icon of a calendar"> Updated: 14/04/2024</div>
+				<div>| <img src="../../../media/icons/clock-solid.svg" alt="an icon of a clock"> 0.5 min read</div>
+			</div>
+
+			<hr>
+
+			<p>
+				If you list the files in the inhere directory, you'll find out we have multiple
+				options for where the password might be:
+			</p>
+			
+			<pre>
+				<code>
+					bandit4@bandit:~$ ls
+					inhere
+					bandit4@bandit:~$ cd inhere/
+					bandit4@bandit:~/inhere$ ls
+					-file00  -file01  -file02  -file03  -file04  -file05  -file06  -file07  -file08  -file09
+				</code>
+			</pre>
+			
+			<p>
+				We can try to cat all of the files together by using the asterisk glob pattern, which
+				matches zero or more characters, thus every filename in our list. However, it's hard
+				to make sense from the output.
+			</p>
+
+			<pre>
+				<code>
+					bandit4@bandit:~/inhere$ cat ./*
+					QRrtZi	H
+							|�ȧ�^7L3Yͯ	Ŵ�E��	V&�hF�̫�\�⃐�x�2Ki��e��VOp{	�Ub4gQ�eE}:�j8���<.�S 0]7�b�~G=1���B׃�
+							��9ؽ5lrIWWI6bB37kxfiCQZqUdOIYfr6eEeqR
+					���9"T��Z$�"��
+								Z����q�7�/�bandit4@bandit:~/inhere$
+				</code>
+			</pre>
+			
+
+			<div class="notes-and-tips"><strong>tip:</strong> if your terminal is messed up, try the "reset" command</div>
+
+			<p>
+				That's why we will have to use the strings command, which takes file content
+				as input and prints only the human-readable characters as output. Making the output
+				easy for us to read.
+			</p>
+			
+			<pre>
+				<code>
+					bandit4@bandit:~/inhere$ strings ./*
+					HRrtZ
+					MUb4
+					eE}:
+					lrIWWI6bB37kxfiCQZqUdOIYfr6eEeqR
+				</code>
+			</pre>
+
+			<p>
+				Much better! Based on the format of the passwords from the previous levels we can
+				point out the password for level 5 to be in the last line. An alternative solution
+				would be to use the file command, that can determine file types, to figure out
+				which one of the available files has ASCII text.
+			</p>
+
+			<pre>
+				<code>
+					bandit4@bandit:~/inhere$ file ./*
+					./-file00: data
+					./-file01: data
+					./-file02: data
+					./-file03: data
+					./-file04: data
+					./-file05: data
+					./-file06: data
+					./-file07: ASCII text
+					./-file08: data
+					./-file09: data
+				</code>
+			</pre>
+
+			<p>File07 is the only candidate so that's the file with our previously found password!</p>
+
+			<hr>
+
+			<div class="level-links">
+				<a href="./level3.html">&lt;-Previous Level</a>
+				<a href="">Next Level-&gt;</a>
+			</div>
+		</div>
+
+		<div class="footer">
+			Copyright &#169; 2024 Lorentz0-m 
+		</div>
+	</body>
+</html>

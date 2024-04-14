@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Bandit Level 3 Write-up</title>
+		<link rel="stylesheet" href="styles.css">
+	</head>
+
+	<body>
+		<div class="header">
+			<div class="profile">
+				<div class="username"><a href="../../../index.html">Lorentz0-m</a></div>
+				<div class="short-description">CTF write-ups and security related topics</div>
+			</div>
+
+			<ul>
+				<li><a href="../../../index.html">Home</a></li>
+				<li><a href="../../all_articles.html">All Posts</a></li>
+				<li><a href="../../../about.html">About</a></li>
+			</ul>
+		</div>
+
+		<div class="page-content">
+			<h1 class="title">OverTheWire Bandit Level 3 Write-up</h1>
+
+			<div class="info">
+				<div><img src="../../../media/icons/calendar-days-solid.svg" alt="an icon of a calendar"> Updated: 14/04/2024</div>
+				<div>| <img src="../../../media/icons/clock-solid.svg" alt="an icon of a clock"> 1 min read</div>
+			</div>
+
+			<hr>
+
+			<p>
+				We already know that the password for the next level is stored in a hidden file
+				inside the inhere directory. So let's cd into that directory first.
+			</p>
+
+			<pre>
+				<code>
+					bandit3@bandit:~$ ls
+					inhere
+					bandit3@bandit:~$ cd inhere/
+				</code>
+			</pre>
+
+			<p>
+				Terminal commands have a lot of additional options available alongside their default
+				usage. These options are called "flags" or "switches". When described by a single
+				letter they can be addressed with a dash, and if the option is an entire word we can
+				use a double dash. For example, to make sure we can view hidden files with the ls
+				command we have to add the -a flag. The -l flag stands for long listing and gives us
+				additional information, and -h makes the file sizes human readable.
+			</p>
+			
+			<pre>
+				<code>
+					bandit3@bandit:~/inhere$ ls -lah
+					total 12K
+					drwxr-xr-x 2 root    root    4.0K <date> <time> 06:19 .
+					drwxr-xr-x 3 root    root    4.0K <date> <time> 06:19 ..
+					-rw-r----- 1 bandit4 bandit3   33 <date> <time> 06:19 .hidden
+				</code>
+			</pre>
+
+			<p>And there it is!</p>
+
+			<div class="notes-and-tips">note: hidden files in Linux always start with a dot</div>
+			
+			<pre>
+				<code>
+					bandit3@bandit:~/inhere$ cat .hidden
+					2EW7BBsr6aMMoJ2HjW067dm8EgX26xNe
+				</code>
+			</pre>
+
+			<p>Level 3 done!</p>
+
+			<hr>
+
+			<div class="level-links">
+				<a href="./level2.html">&lt;-Previous Level</a>
+				<a href="./level4.html">Next Level-&gt;</a>
+			</div>
+		</div>
+
+		<div class="footer">
+			Copyright &#169; 2024 Lorentz0-m 
+		</div>
+	</body>
+</html>

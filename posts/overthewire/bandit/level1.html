@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Bandit Level 1 Write-up</title>
+		<link rel="stylesheet" href="styles.css">
+	</head>
+
+	<body>
+		<div class="header">
+			<div class="profile">
+				<div class="username"><a href="../../../index.html">Lorentz0-m</a></div>
+				<div class="short-description">CTF write-ups and security related topics</div>
+			</div>
+
+			<ul>
+				<li><a href="../../../index.html">Home</a></li>
+				<li><a href="../../all_articles.html">All Posts</a></li>
+				<li><a href="../../../about.html">About</a></li>
+			</ul>
+		</div>
+
+		<div class="page-content">
+			<h1 class="title">OverTheWire Bandit Level 1 Write-up</h1>
+
+			<div class="info">
+				<div><img src="../../../media/icons/calendar-days-solid.svg" alt="an icon of a calendar"> Updated: 14/04/2024</div>
+				<div>| <img src="../../../media/icons/clock-solid.svg" alt="an icon of a clock"> 1 min read</div>
+			</div>
+
+			<hr>
+
+			<p>In this level we have a file called "-" located inside ~</p>
+
+			<pre>
+				<code>
+					bandit1@bandit:~$ ls
+					-
+				</code>
+			</pre>
+
+			<p>
+				However if try to cat the file in the terminal we'll see that it's not quite
+				working as expected.
+			</p>
+
+			<pre>
+				<code>
+					bandit1@bandit:~$ cat -
+					foo
+					foo
+					bar
+					bar
+					foobar
+					foobar
+					^C
+				</code>
+			</pre>
+
+			<div class="notes-and-tips"><strong>tip:</strong> you can use ctrl+c to terminate any running command-line process</div>
+
+			<p>
+				If we reference the cat man page, we will see that it mentions "With no FILE, or when
+				FILE is -, read standard input". Standard input (or stdin, file handle 0) in this
+				case means whatever input we provide with our keyboard, which results in cat
+				returning whatever we type to it back. To get around this issue we have to specify
+				the directory path of the file like so:
+			</p>
+
+			<pre>
+				<code>
+					bandit1@bandit:~$ cat ./-
+					rRGizSaX8Mk1RTb1CNQoXTcYZWU6lgzi
+				</code>
+			</pre>
+
+			<p>Which results in the password for level 2!</p>
+
+			<div class="notes-and-tips">
+				<strong>note:</strong> in this example the relative path to the file was used by starting from our
+				current directory (indicated with a dot), however we could have used the absolute
+				file path too, which starts from the root of the filesystem (/), by executing the
+				following:
+			</div>
+
+			<pre>
+				<code>
+					bandit1@bandit:~$ cat /home/bandit1/-
+					rRGizSaX8Mk1RTb1CNQoXTcYZWU6lgzi
+				</code>
+			</pre>
+
+			<hr>
+
+			<div class="level-links">
+				<a href="./level0.html">&lt;-Previous Level</a>
+				<a href="./level2.html">Next Level-&gt;</a>
+			</div>
+		</div>
+
+		<div class="footer">
+			Copyright &#169; 2024 Lorentz0-m 
+		</div>
+	</body>
+</html>
