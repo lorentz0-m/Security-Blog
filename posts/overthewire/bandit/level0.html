@@ -4,25 +4,112 @@
 	<head>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>Bandit Level 0</title>
+		<title>Bandit Level 0 Write-up</title>
 		<link rel="stylesheet" href="styles.css">
 	</head>
 
 	<body>
 		<div class="header">
 			<div class="profile">
-				<div class="username"><a href="">Lorentz0-m</a></div>
-				<div class="info">CTF write-ups and security related topics</div>
+				<div class="username"><a href="../../../index.html">Lorentz0-m</a></div>
+				<div class="short-description">CTF write-ups and security related topics</div>
 			</div>
 
 			<ul>
-				<li><a href="">Home</a></li>
-				<li><a href="">All Posts</a></li>
-				<li><a href="">About</a></li>
+				<li><a href="../../../index.html">Home</a></li>
+				<li><a href="../../all_articles.html">All Posts</a></li>
+				<li><a href="../../../about.html">About</a></li>
 			</ul>
 		</div>
 
-		<div class="page-content"></div>
+		<div class="page-content">
+			<h1 class="title">OverTheWire Bandit Level 0 Write-up</h1>
+
+			<div class="info">
+				<div><img src="../../../media/icons/calendar-days-solid.svg" alt="an icon of a calendar"> Updated: 14/04/2024</div>
+				<div>| <img src="../../../media/icons/clock-solid.svg" alt="an icon of a clock"> 2 min read</div>
+			</div>
+
+			<hr>
+
+			<p>The main goal of this level is to connect to the overthewire server via SSH.</p>
+
+			<p>
+				SSH is a utility used for creating a secure shell on a server or another computer
+				through a network. Traditionally Telnet was used, but since it didn't provide any
+				form of encryption and always sent data as plain text it got deprecated as the
+				internet grew in size.
+			</p>
+			<p>You can connect to each level by executing:</p>
+			<pre>
+				<code>
+					$ ssh banditX@bandit.labs.overthewire.org -p 2220
+				</code>
+			</pre>
+			<div class="explanation">
+				Explanation of the command:
+				<ul>
+					<li>X is the number corresponding to each level</li>
+					<li>banditX is the username you are trying to login as</li>
+					<li>bandit.labs.overthewire.org is the domain name of the bandit wargame</li>
+					<li>the <code>-p</code> flag specifies the port number you want to connect to,
+					in our case its 2220 since that's the port for all of the bandit challenges</li>
+				</ul>
+			</div>
+			<p>For example in this level we have:</p>
+			<pre>
+				<code>
+					$ ssh bandit0@bandit.labs.overthewire.org -p 2220
+				</code>
+			</pre>
+			<p>
+				After establishing a connection you will be prompted to enter a password.
+				For this level it's simply bandit0. If you want to input the password in
+				advance you can also use sshpass and reference the password from a file.
+			</p>
+			<pre>
+				<code>
+					$ sshpass -f &lt;file name&gt; ssh bandit0@bandit.labs.overthewire.org -p 2220
+				</code>
+			</pre>
+			<div class="tips">
+				<strong>tip:</strong> to read the manual of a command reference its manpage by executing
+				<code>$ man &lt;command name&gt;</code>, or <code>$ help &lt;command name&gt;</code>
+				if its a shell built in like cd (change directory). In case the manual is split into
+				different sections you can view each one by executing
+				<code>$ man &lt;section number&gt; &lt;command name&gt;</code>.
+			</div>
+			<p>
+				Now that you've logged in a shell you can use ls to list the content of your
+				home directory (indicated with a tilde ~)
+			</p>
+			<pre>
+				<code>
+					bandit0@bandit:~$ ls
+					readme
+				</code>
+			</pre>
+			<p>
+				A readme file appears to be stored inside the home dir, by using the cat command
+				(short for concatenate) you can view its content inside the terminal
+			</p>
+			<pre>
+				<code>
+					bandit0@bandit:~$ cat readme
+					NH2SXQwcBdpmTEzi3bvBHMM9H66vVXjL
+				</code>
+			</pre>
+			<p>
+				Which is the password for level 1!
+			</p>
+
+			<hr>
+
+			<div class="level-links">
+				<a href="">&lt;-Introduction</a>
+				<a href="">Next Level-&gt;</a>
+			</div>
+		</div>
 
 		<div class="footer">
 			Copyright &#169; 2024 Lorentz0-m 

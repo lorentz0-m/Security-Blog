@@ -3,6 +3,7 @@
 	src: url("../../../media/fonts/IntelOneMono-Regular.ttf");
 }
 
+/* css reset */
 * {
 	margin: 0;
 	padding: 0;
@@ -12,15 +13,18 @@ html, body {
 	width: 100%;
 	height: 100%;
 	font-family: "IntelOneMono", Cantarell, sans-serif;
-	font-size: 20px;
+	/* font-size: 25px; */
+	font-size: 25px;
 }
 
 body {
 	/* color palette */
 	--white: #FFFFFF;
-	--cadet-gray: #8099A8;
 	--paynes-gray: #40657C;
+	--indigo-dye: #204C66;
 	--prussian-blue: #003250;
+	--light-blue: #3882F6;
+	--dim-cyan: #00D5D5;
 
 	display: flex;
 	flex-flow: column nowrap;
@@ -29,13 +33,12 @@ body {
 }
 
 /* styling the header */
-
 .header {
-	padding: 20px;
+	padding: 0.8rem;
 	background-color: var(--prussian-blue);
 	display: flex;
 	flex-flow: row wrap;
-	gap: 40px;
+	gap: 0.6rem; 
 	justify-content: space-around;
 	align-items: center;
 }
@@ -48,12 +51,12 @@ body {
 .header > ul {
 	display: flex;
 	flex-flow: row wrap;
-	gap: 50px;
+	gap: 2rem;
 	list-style-type: none;
 }
 
 .header > ul a {
-	font-size: 1.25rem;
+	font-size: 1.20rem;
 }
 
 .header a {
@@ -62,15 +65,108 @@ body {
 }
 
 .header a:hover{
-	color: #3882F6;
+	color: var(--light-blue);
+}
+
+/* styling the page content */
+.page-content {
+	background-color: var(--indigo-dye);
+	margin: 2rem 0rem 2rem 0rem;
+	padding: 0.6rem 0.6rem 1rem 0.6rem;
+
+	border-radius: 0.3rem;
+	max-width: 80%;
+	align-self: center;
+
+	display: flex;
+	flex-flow: column nowrap;
+	gap: 1rem;
+}
+
+h1 {
+	font-size: 1.5rem;
+}
+
+h1.title {
+	align-self: center;
+}
+
+.page-content .info img {
+	width: auto;
+	height: 1rem;
+}
+
+.info {
+	align-self: center;
+	display: flex;
+	flex-flow: row wrap;
+	gap: 0.4rem;
+}
+
+.info > div {
+	display: flex;
+	flex-flow: row nowrap;
+	align-items: center;
+	gap: 0.6rem;
+}
+
+hr {
+	background-color: var(--white);
+	height: 2px;
+	border: none; 
+}
+
+/* removing the extra whitespace without
+changing the code indentation */
+pre, code {
+	white-space: pre-line;
+}
+
+pre {
+	overflow: auto;
+	background-color: rgb(20, 20, 20);
+	border-radius: 0.3rem;
+	padding: 0rem 0.8rem 0rem 0.8rem;
+}
+
+.explanation {
+	overflow: auto;
+}
+
+.page-content .explanation > ul {
+	margin-left: 2rem;
+}
+
+.page-content > .tips {
+	background-color: var(--prussian-blue);
+	border-radius: 0.3rem;
+	padding: 0.4rem;
+	border-left: 0.4rem solid var(--dim-cyan);
+}
+
+.level-links a {
+	text-decoration: none;
+	color: var(--white);
+	font-weight: bold;
+}
+
+.level-links a:hover {
+	color: var(--light-blue);
+}
+
+.level-links {
+	display: flex;
+	flex-flow: row wrap;
+	gap: 1.2rem;
+	justify-content: space-between;
+	padding: 0.4rem;
 }
 
 /* styling the footer */
-
 .footer {
 	margin-top: auto;
 	background-color: var(--prussian-blue);
-	padding: 10px;
+	padding: 0.4rem;
 	display: flex;
 	justify-content: center;
 	align-items: center;
