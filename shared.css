@@ -22,6 +22,7 @@ body {
 	--white: #FFFFFF;
 	--paynes-gray: #40657C;
 	--indigo-dye: #204C66;
+	--indigo-dye-2: #103F5Bff;
 	--prussian-blue: #003250;
 	--light-blue: #3882F6;
 	--dim-cyan: #00D5D5;
@@ -30,6 +31,14 @@ body {
 	flex-flow: column nowrap;
 	color: var(--white);
 	background-color: var(--paynes-gray);
+}
+
+a {
+	color: var(--white);
+}
+
+a:hover {
+	color: var(--light-blue);
 }
 
 /* styling the header */
@@ -60,110 +69,28 @@ body {
 }
 
 .header a {
-	color: var(--white);
 	text-decoration: none;
 }
 
-.header a:hover{
-	color: var(--light-blue);
-}
+/* styling the svg icons */
 
-/* styling the page content */
-.page-content {
-	background-color: var(--indigo-dye);
-	margin: 2rem 0rem 2rem 0rem;
-	padding: 0.6rem 0.6rem 1rem 0.6rem;
-
-	border-radius: 0.3rem;
-	max-width: 80%;
-	align-self: center;
-
-	display: flex;
-	flex-flow: column nowrap;
-	gap: 1rem;
-}
-
-h1 {
-	font-size: 1.5rem;
-}
-
-h1.title {
-	align-self: center;
-}
-
-.page-content .info img {
+.svg {
 	width: auto;
 	height: 1rem;
 }
 
-.info {
+.article-info {
 	align-self: center;
 	display: flex;
 	flex-flow: row wrap;
 	gap: 0.4rem;
 }
 
-.info > div {
+.article-info > div {
 	display: flex;
 	flex-flow: row nowrap;
 	align-items: center;
 	gap: 0.6rem;
-}
-
-hr {
-	background-color: var(--white);
-	height: 2px;
-	border: none; 
-}
-
-/* removing the extra whitespace without
-changing the code indentation */
-pre, code {
-	white-space: pre-line;
-}
-
-pre {
-	overflow: auto;
-	background-color: rgb(20, 20, 20);
-	border-radius: 0.3rem;
-	padding: 0rem 0.8rem 0rem 0.8rem;
-}
-
-.explanation {
-	overflow: auto;
-}
-
-.page-content .explanation > ul {
-	margin-left: 2rem;
-}
-
-.page-content > .notes-and-tips {
-	background-color: var(--prussian-blue);
-	border-radius: 0.3rem;
-	padding: 0.4rem;
-	border-left: 0.4rem solid var(--dim-cyan);
-}
-
-.page-content a {
-	color: var(--white);
-}
-
-.page-content > .level-links a {
-	text-decoration: none;
-	color: var(--white);
-	font-weight: bold;
-}
-
-.page-content > .level-links a:hover {
-	color: var(--light-blue);
-}
-
-.level-links {
-	display: flex;
-	flex-flow: row wrap;
-	gap: 1.2rem;
-	justify-content: space-between;
-	padding: 0.4rem;
 }
 
 /* styling the footer */
