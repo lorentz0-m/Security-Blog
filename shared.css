@@ -13,7 +13,6 @@ html, body {
 	width: 100%;
 	height: 100%;
 	font-family: "IntelOneMono", Cantarell, sans-serif;
-	/* font-size: 25px; */
 	font-size: 25px;
 }
 
@@ -21,9 +20,11 @@ body {
 	/* color palette */
 	--white: #FFFFFF;
 	--paynes-gray: #40657C;
+
 	--indigo-dye: #204C66;
-	--indigo-dye-2: #103F5Bff;
+	--indigo-dye-2: #103F5B;
 	--prussian-blue: #003250;
+
 	--light-blue: #3882F6;
 	--dim-cyan: #00D5D5;
 
