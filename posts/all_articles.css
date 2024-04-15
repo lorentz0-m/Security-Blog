@@ -29,8 +29,8 @@ h1.title {
 	transform: scale(1.05);
 }
 
-.card > h2 {
-	font-size: 1.2rem;
+.card h1 {
+	font-size: 1.5rem;
 }
 
 .card a {

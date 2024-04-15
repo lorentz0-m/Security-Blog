@@ -24,6 +24,7 @@ h1 {
 }
 
 hr {
+	width: 100%;
 	background-color: var(--white);
 	height: 2px;
 	border: none; 
