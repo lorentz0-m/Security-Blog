@@ -28,6 +28,9 @@ body {
 	--light-blue: #3882F6;
 	--dim-cyan: #00D5D5;
 
+	/* main border radius */
+	--radius: 0.3rem;
+
 	display: flex;
 	flex-flow: column nowrap;
 	color: var(--white);
@@ -48,7 +51,7 @@ a:hover {
 	background-color: var(--prussian-blue);
 	display: flex;
 	flex-flow: row wrap;
-	gap: 0.6rem; 
+	gap: 2rem; 
 	justify-content: space-around;
 	align-items: center;
 }
@@ -61,12 +64,12 @@ a:hover {
 .header > ul {
 	display: flex;
 	flex-flow: row wrap;
-	gap: 2rem;
+	gap: 2.5rem;
 	list-style-type: none;
 }
 
 .header > ul a {
-	font-size: 1.20rem;
+	font-size: 1.2rem;
 }
 
 .header a {
