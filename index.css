@@ -11,6 +11,18 @@ div.container {
 	gap: 1rem;
 }
 
+@media (max-width: 1400px) {
+	div.container {
+		max-width: 80%;
+		align-self: center;
+		margin: 2rem 0rem 2rem 0rem;
+		display: flex;
+		align-items: center;
+		flex-flow: column nowrap;
+		gap: 2rem;
+	}
+}
+
 .recent-posts {
 	background-color: var(--indigo-dye-2);
 	border-radius: var(--radius);
