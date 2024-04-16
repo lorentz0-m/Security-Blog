@@ -4,26 +4,34 @@ body > .container > .page-content {
 }
 
 div.container {
-	display: flex;
-	flex-flow: row wrap;
 	margin: 2rem 1rem 2rem 1rem;
+	display: grid;
+	grid-template-columns: max-content 1fr;
+	grid-template-rows: 1fr;
 	gap: 1rem;
-	align-self: center;
 }
 
-.page-content {
-	flex: 1 10 0;
+@media (max-width: 1400px) {
+	div.container {
+		max-width: 80%;
+		align-self: center;
+		margin: 2rem 0rem 2rem 0rem;
+		display: flex;
+		align-items: center;
+		flex-flow: column nowrap;
+		gap: 2rem;
+	}
 }
 
 .recent-posts {
 	background-color: var(--indigo-dye-2);
-	border-radius: 0.3rem;
+	border-radius: var(--radius);
 	height: min-content;
 	padding: 1rem;
 
 	display: flex;
 	flex-flow: column nowrap;
-	align-items: start;
+	align-items: center;
 	gap: 1.5rem;
 }
 
@@ -31,9 +39,10 @@ div.container {
 	display: flex;
 	flex-flow: column nowrap;
 	gap: 0.5rem;
+	align-items: start;
 }
 
-.article-info {
+.recent-posts .article-info {
 	align-self: start;
 }
 

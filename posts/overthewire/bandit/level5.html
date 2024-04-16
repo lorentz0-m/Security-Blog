@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Bandit Level 5 Write-up</title>
+		<link rel="stylesheet" href="../../styles.css">
+		<link rel="stylesheet" href="../../../shared.css">
+	</head>
+
+	<body>
+		<div class="header">
+			<div class="profile">
+				<div class="username"><a href="../../../index.html">Lorentz0&#8209;m</a></div>
+				<div class="short-description">CTF write-ups and security related topics</div>
+			</div>
+
+			<ul>
+				<li><a href="../../../index.html">Home</a></li>
+				<li><a href="../../all_articles.html">All Posts</a></li>
+				<li><a href="../../../about.html">About</a></li>
+			</ul>
+		</div>
+
+		<div class="page-content">
+			<h1 class="title">OverTheWire Bandit Level 5 Write&#8209;up</h1>
+
+			<div class="article-info">
+				<div><img class="svg" src="../../../media/icons/calendar-days-solid.svg" alt="an icon of a calendar"> Updated: 16/04/2024</div>
+				<div>| <img class="svg" src="../../../media/icons/clock-solid.svg" alt="an icon of a clock"> 2 min read</div>
+			</div>
+
+			<hr>
+
+			<p>The password for the next level appears to be somewhere under the inhere directory:</p>
+
+			<pre>
+				<code>
+					bandit5@bandit:~$ ls inhere
+					maybehere00 maybehere03 maybehere06 maybehere09 maybehere12 maybehere15 maybehere18
+					maybehere01 maybehere04 maybehere07 maybehere10 maybehere13 maybehere16 maybehere19
+					maybehere02 maybehere05 maybehere08 maybehere11 maybehere14 maybehere17
+				</code>
+			</pre>
+
+			<div class="explanation">
+				We know that the properties of the file we want are:
+				<ul>
+					<li>1033 bytes in size</li>
+					<li>not executable</li>
+					<li>human-readable</li>
+				</ul>
+			</div>
+
+			<p>
+				So we will use them as conditions for the find command, which searches through a
+				directory tree recursively and has multiple search options available. Let's try
+				to only use the first condition:
+			</p>
+
+			<pre>
+				<code>
+					bandit5@bandit:~$ find inhere/ -type f -size 1033c
+					inhere/maybehere07/.file2
+					bandit5@bandit:~$ cat inhere/maybehere07/.file2
+					P4L4vucdmLnm8I7Vl7jG1ApGSfjYKqJU
+				</code>
+			</pre>
+
+			<div class="explanation">
+				Explanation of the command:
+				<ul>
+					<li>with inhere/ we specify our search to start from the inhere directory</li>
+					<li>-type f refers only to files and excludes directories</li>
+					<li>-size 1033c specifies the file size to be exactly 1033 bytes</li>
+				</ul>
+			</div>
+
+			<p>
+				Turns out only one condition was enough! However if we wanted to search for
+				non executable files that are human-readable as well we would do:
+			</p>
+
+			<pre>
+				<code>
+					bandit5@bandit:~$ find inhere/ -type f -size 1033c ! -executable -exec strings {} +
+					P4L4vucdmLnm8I7Vl7jG1ApGSfjYKqJU
+				</code>
+			</pre>
+
+			<div class="explanation">
+				Explanation of the command:
+				<ul>
+					<li>! -executable uses the NOT (!) operator to reverse the effect of the -executable
+					option, which matches files that are executable for the user running the command</li>
+					<li>-exec strings {} + executes the strings command on each item that comes up,
+					filtering out the non human-readable characters, the brackets are a placeholder
+					and the plus sign is the command terminator, for more details reference the find
+					manual page</li>
+				</ul>
+			</div>
+
+			<p>
+				Last but not least, since file size happens to be our only concern here, we could
+				find our way around a solution by using the du command, which is used to estimate
+				file space usage, by executing the following:
+			</p>
+
+			<pre>
+				<code>
+					bandit5@bandit:~$ du -ab inhere/ | grep "1033"
+					1033	inhere/maybehere07/.file2
+				</code>
+			</pre>
+
+			<div class="explanation">
+				Explanation of the command:
+
+				<ul>
+					<li>-ab is a combination of the -a flag, which <em>includes</em> files in the storage report,
+					and the -b switch that is used to get bytes in the output</li>
+					<li>inhere/ indicates the directory we want to search</li>
+					<li>the | symbol is called a pipe, as it "pipes" the output of one command to another</li>
+					<li>in this case we are receiving the input with the grep command, which filters
+					out the results that dont include the string "1033", meaning 1033 bytes in our context</li>
+				</ul>
+			</div>
+
+			<hr>
+
+			<div class="level-links">
+				<a href="./level4.html">&lt;-Previous Level</a>
+				<a href="../../../index.html">Home-&gt;</a>
+			</div>
+		</div>
+
+		<div class="footer">
+			Copyright &#169; 2024 Lorentz0-m 
+		</div>
+	</body>
+</html>

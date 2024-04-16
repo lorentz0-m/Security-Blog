@@ -6,7 +6,7 @@ h1.title {
 
 .articles-container {
 	margin: 0rem 0rem 1rem 0rem;
-	max-width: 75%;
+	max-width: 80%;
 	align-self: center;
 
 	display: grid;
@@ -18,7 +18,7 @@ h1.title {
 .card {
 	background-color: var(--indigo-dye-2);
 	padding: 1rem;
-	border-radius: 0.3rem;
+	border-radius: var(--radius);
 	display: flex;
 	flex-flow: column nowrap;
 	gap: 0.5rem;
