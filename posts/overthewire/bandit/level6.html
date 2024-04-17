@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Bandit Level 6 Write-up</title>
+		<link rel="stylesheet" href="../../styles.css">
+		<link rel="stylesheet" href="../../../shared.css">
+	</head>
+
+	<body>
+		<div class="header">
+			<div class="profile">
+				<div class="username"><a href="../../../index.html">Lorentz0&#8209;m</a></div>
+				<div class="short-description">CTF write-ups and security related topics</div>
+			</div>
+
+			<ul>
+				<li><a href="../../../index.html">Home</a></li>
+				<li><a href="../../all_articles.html">All Posts</a></li>
+				<li><a href="../../../about.html">About</a></li>
+			</ul>
+		</div>
+
+		<div class="page-content">
+			<h1 class="title">OverTheWire Bandit Level 6 Write&#8209;up</h1>
+
+			<div class="article-info">
+				<div><img class="svg" src="../../../media/icons/calendar-days-solid.svg" alt="an icon of a calendar"> Updated: 17/04/2024</div>
+				<div>| <img class="svg" src="../../../media/icons/clock-solid.svg" alt="an icon of a clock"> 1.5 min read</div>
+			</div>
+
+			<hr>
+
+			<div class="explanation">
+				In this level the properties of our file are:
+				<ul>
+					<li>owned by user bandit7</li>
+					<li>owned by group bandit6</li>
+					<li>33 bytes in size</li>
+				</ul>
+			</div>
+
+			<p>
+				However, if we go ahead and tackle each one of the conditions with the appropriate
+				options, you'll quickly see that the output is drowned in "Permission denied" errors.
+			</p>
+			
+			<pre>
+				<code>
+					bandit6@bandit:~$ find / -type f -user bandit7 -group bandit6 -size 33c
+					find: ‘/etc/ssl/private’: Permission denied
+					find: ‘/etc/polkit-1/localauthority’: Permission denied
+					find: ‘/etc/sudoers.d’: Permission denied
+					---snip---
+				</code>
+			</pre>
+			
+			<p>
+				The reason for that is that we told the command to start searching from the root of
+				the filesystem, so encountering files which we do not have the permissions to view is
+				inevitable. We can solve this issue by redirecting all stderr (standard error)
+				streams to the /dev/null file, which is a place we can safely discard any data in.
+			</p>
+			
+			<pre>
+				<code>
+					bandit6@bandit:~$ find / -type f -user bandit7 -group bandit6 -size 33c 2> /dev/null
+					/var/lib/dpkg/info/bandit7.password
+				</code>
+			</pre>
+
+			<div class="explanation">
+				Explanation of the command:
+				<ul>
+					<li>2 is the file handle for stderr streams</li>
+					<li>> is the redirect operator, it is used to redirect the output to a file
+					instead of the console</li>
+					<li>/dev/null is our target file</li>
+				</ul>
+			</div>
+
+			<p>And the file with the password for the next level appears!</p>
+			
+			<pre>
+				<code>
+					bandit6@bandit:~$ cat /var/lib/dpkg/info/bandit7.password
+					z7WtoNQU2XfjmMtWA8u5rN4vzqu4v99S
+				</code>
+			</pre>
+			
+			<p>You can also directly cat it to the console by modifying the find command:</p>
+			
+			<pre>
+				<code>
+					bandit6@bandit:~$ find / -type f -user bandit7 -group bandit6 -size 33c -exec cat {} + 2> /dev/null
+					z7WtoNQU2XfjmMtWA8u5rN4vzqu4v99S
+				</code>
+			</pre>
+
+			<hr>
+
+			<div class="level-links">
+				<a href="./level5.html">&lt;&#8209;Previous Level</a>
+				<a href="./level7.html">Next Level&#8209;&gt;</a>
+			</div>
+		</div>
+
+		<div class="footer">
+			Copyright &#169; 2024 Lorentz0&#8209;m 
+		</div>
+	</body>
+</html>
