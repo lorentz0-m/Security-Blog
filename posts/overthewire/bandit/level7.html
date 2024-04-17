@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Bandit Level 7 Write-up</title>
+		<link rel="stylesheet" href="../../styles.css">
+		<link rel="stylesheet" href="../../../shared.css">
+	</head>
+
+	<body>
+		<div class="header">
+			<div class="profile">
+				<div class="username"><a href="../../../index.html">Lorentz0&#8209;m</a></div>
+				<div class="short-description">CTF write-ups and security related topics</div>
+			</div>
+
+			<ul>
+				<li><a href="../../../index.html">Home</a></li>
+				<li><a href="../../all_articles.html">All Posts</a></li>
+				<li><a href="../../../about.html">About</a></li>
+			</ul>
+		</div>
+
+		<div class="page-content">
+			<h1 class="title">OverTheWire Bandit Level 7 Write&#8209;up</h1>
+
+			<div class="article-info">
+				<div><img class="svg" src="../../../media/icons/calendar-days-solid.svg" alt="an icon of a calendar"> Updated: 17/04/2024</div>
+				<div>| <img class="svg" src="../../../media/icons/clock-solid.svg" alt="an icon of a clock"> 0.5 min read</div>
+			</div>
+
+			<hr>
+
+			<p>A file called data.txt appears to be inside our home directory.</p>
+
+			<pre>
+				<code>
+					bandit7@bandit:~$ ls
+					data.txt
+				</code>
+			</pre>
+			
+			<p>
+				However, if we try to cat the file inside the console we can quickly see the terminal
+				fill up with garbage data:
+			</p>
+
+			<pre>
+				<code>
+					bandit7@bandit:~$ cat data.txt
+					gallop	hu3ZhCrGRvfaO5jsY6ttvApzVCA2Hjvs
+					Aurelia's	ikl4F3cK5m6Cl6HAxva6zUAVJhI2Cvc6
+					stoicism	JiW9ts44udf20bJHe8H5dS1c99Muwz42
+					embodies	vWheZcAsQHZNnerI3ViW8wqOKIx0kbgR
+					Plato	dW2U8E5FfuAvNLdGDupP8GAxr922ZV0x
+					cultivation	A90E75jvWbEKrijFxM4GxqHEw8c8U2Bf
+					stable	omR4PHolFwbI0IEJsanveA21yWvFy8a7
+					---snip---
+				</code>
+			</pre>
+
+			<p>
+				Since we know that the password for the next level is next to the word millionth, we
+				can use the grep command to easily locate it:
+			</p>
+
+			<pre>
+				<code>
+					bandit7@bandit:~$ grep "millionth" data.txt
+					millionth	TESKZC0XvTetK0S9xNwm25STk5iWrBvP
+				</code>
+			</pre>
+
+			<p>Onto level 8!</p>
+
+			<hr>
+
+			<div class="level-links">
+				<a href="./level6.html">&lt;&#8209;Previous Level</a>
+				<a href="../../../index.html">Home&#8209;&gt;</a>
+			</div>
+		</div>
+
+		<div class="footer">
+			Copyright &#169; 2024 Lorentz0&#8209;m 
+		</div>
+	</body>
+</html>
