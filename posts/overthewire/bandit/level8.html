@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Bandit Level 8 Write-up</title>
+		<link rel="stylesheet" href="../../styles.css">
+		<link rel="stylesheet" href="../../../shared.css">
+	</head>
+
+	<body>
+		<div class="header">
+			<div class="profile">
+				<div class="username"><a href="../../../index.html">Lorentz0&#8209;m</a></div>
+				<div class="short-description">CTF write-ups and security related topics</div>
+			</div>
+
+			<ul>
+				<li><a href="../../../index.html">Home</a></li>
+				<li><a href="../../all_articles.html">All Posts</a></li>
+				<li><a href="../../../about.html">About</a></li>
+			</ul>
+		</div>
+
+		<div class="page-content">
+			<h1 class="title">OverTheWire Bandit Level 8 Write&#8209;up</h1>
+
+			<div class="article-info">
+				<div><img class="svg" src="../../../media/icons/calendar-days-solid.svg" alt="an icon of a calendar"> Updated: 18/04/2024</div>
+				<div>| <img class="svg" src="../../../media/icons/clock-solid.svg" alt="an icon of a clock"> 0.5 min read</div>
+			</div>
+
+			<hr>
+
+			<p>
+				For this level we know that the password is stored inside data.txt again, but the
+				hint this time is that it's the only line of text which occurs once. The command
+				that will do the job for us is the uniq command, which reports or omits repeated lines.
+				However, at first glance we can notice that it's not quite working as expected:
+			</p>
+			
+			<pre>
+				<code>
+					bandit8@bandit:~$ uniq -u data.txt
+					kjIuqjobFBhKw9Mmfj2wAnWbXB2VxSfv
+					5Y76FifuxKStZi4CVovF2uPhgLrZnLzG
+					AiYd84lOOVTA4gqJPX7f6DH8eG3zwq1W
+					---snip---
+				</code>
+			</pre>
+			
+			<div class="explanation">
+				Explanation of the command:
+				<ul>
+					<li>the -u flag specifies only unique lines to be printed, which is the password in our case</li>
+				</ul>
+			</div>
+
+			<p>
+				If you look at the man page of uniq you will notice that it filters only <em>adjacent</em>
+				matching lines from stdin. The lines in data.txt are stored in no particular order.
+				To solve this problem we can simply sort the content of data.txt with the sort command
+				and pipe the output to uniq afterwards like so:
+			</p>
+			
+			<pre>
+				<code>
+					bandit8@bandit:~$ sort data.txt | uniq -u
+					EN632PlfYiZbn3PhVK3XOGSlNInNE00t
+				</code>
+			</pre>
+
+			<p>Level 8 done!</p>
+
+			<hr>
+
+			<div class="level-links">
+				<a href="./level7.html">&lt;&#8209;Previous Level</a>
+				<a href="./level9.html">Next Level&#8209;&gt;</a>
+			</div>
+		</div>
+
+		<div class="footer">
+			Copyright &#169; 2024 Lorentz0&#8209;m 
+		</div>
+	</body>
+</html>
