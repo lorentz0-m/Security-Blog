@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Bandit Level 9 Write-up</title>
+		<link rel="stylesheet" href="../../styles.css">
+		<link rel="stylesheet" href="../../../shared.css">
+	</head>
+
+	<body>
+		<div class="header">
+			<div class="profile">
+				<div class="username"><a href="../../../index.html">Lorentz0&#8209;m</a></div>
+				<div class="short-description">CTF write-ups and security related topics</div>
+			</div>
+
+			<ul>
+				<li><a href="../../../index.html">Home</a></li>
+				<li><a href="../../all_articles.html">All Posts</a></li>
+				<li><a href="../../../about.html">About</a></li>
+			</ul>
+		</div>
+
+		<div class="page-content">
+			<h1 class="title">OverTheWire Bandit Level 9 Write&#8209;up</h1>
+
+			<div class="article-info">
+				<div><img class="svg" src="../../../media/icons/calendar-days-solid.svg" alt="an icon of a calendar"> Updated: 18/04/2024</div>
+				<div>| <img class="svg" src="../../../media/icons/clock-solid.svg" alt="an icon of a clock"> 0 min read</div>
+			</div>
+
+			<hr>
+
+			<p>
+				This time the password is one of the few human-readable strings, which means we will
+				resort to the strings command again! We know that it is preceded by several "=" characters,
+				so we will assume it has at least two equal signs. Applying the previous we get:
+			</p>
+
+			<pre>
+				<code>
+					bandit9@bandit:~$ strings data.txt | grep "=="
+					x]T========== theG)"
+					========== passwordk^
+					========== is
+					========== G7w8LIi6J3kTb8A7j9LgrywtEUlyyp6s
+				</code>
+			</pre>
+
+			<p>We can easily make out the password for level 10 to be in the last line!</p>
+
+			<hr>
+
+			<div class="level-links">
+				<a href="./level8.html">&lt;&#8209;Previous Level</a>
+				<a href="../../../index.html">Home&#8209;&gt;</a>
+			</div>
+		</div>
+
+		<div class="footer">
+			Copyright &#169; 2024 Lorentz0&#8209;m 
+		</div>
+	</body>
+</html>
