@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Bandit Level 11 Write-up</title>
+		<link rel="stylesheet" href="../../styles.css">
+		<link rel="stylesheet" href="../../../shared.css">
+	</head>
+
+	<body>
+		<div class="header">
+			<div class="profile">
+				<div class="username"><a href="../../../index.html">Lorentz0&#8209;m</a></div>
+				<div class="short-description">CTF write-ups and security related topics</div>
+			</div>
+
+			<ul>
+				<li><a href="../../../index.html">Home</a></li>
+				<li><a href="../../all_articles.html">All Posts</a></li>
+				<li><a href="../../../about.html">About</a></li>
+			</ul>
+		</div>
+
+		<div class="page-content">
+			<h1 class="title">OverTheWire Bandit Level 11 Write&#8209;up</h1>
+
+			<div class="article-info">
+				<div><img class="svg" src="../../../media/icons/calendar-days-solid.svg" alt="an icon of a calendar"> Updated: 19/04/2024</div>
+				<div>| <img class="svg" src="../../../media/icons/clock-solid.svg" alt="an icon of a clock"> 1 min read</div>
+			</div>
+
+			<hr>
+
+			<p>
+				The content of the file this time is encoded with rot13, which is a simple letter
+				substitution cipher that replaces each letter with the 13th letter after it.
+			</p>
+
+			<pre>
+				<code>
+					bandit11@bandit:~$ cat data.txt
+					Gur cnffjbeq vf WIAOOSFzMjXXBC0KoSKBbJ8puQm5lIEi
+				</code>
+			</pre>
+
+			<p>
+				Various methods can be used to solve this challenge, including online rot13 decoders
+				and a command-line utility called rot13. However, for educational purposes we will use
+				the tr command, which is used to translate or delete text. tr takes two sets as
+				arguments, the first one indicates the selected characters and the second the
+				translation operation. Since the english alphabet has 26 characters, rot13 happens to
+				be its own reverse, thus applying it again will give us the solution. The tr command
+				in full form is:
+			</p>
+
+			<pre>
+				<code>
+					bandit11@bandit:~$ cat data.txt | tr "[abcdefghijklmnopqrstuvwxyz][ABCDEFGHIJKLMNOPQRSTUVWXYZ]" "[nopqrstuvwxyzabcdefghijklm][NOPQRSTUVWXYZABCDEFGHIJKLM]"
+				</code>
+			</pre>
+
+			However we can shorten the arguments like so:
+
+			<pre>
+				<code>
+					bandit11@bandit:~$ cat data.txt | tr "[a-z][A-Z]" "[n-za-m][N-ZA-M]"
+					The password is JVNBBFSmZwKKOP0XbFXOoW8chDz5yVRv
+				</code>
+			</pre>
+
+			<div class="explanation">
+				Explanation of the command:
+				<ul>
+					<li>"[a-z][A-Z]", selects both upper and lowercase letters at the same time</li>
+					<li>"[n-za-m][N-ZA-M]", maps each letter 13 places forward</li>
+				</ul>
+			</div>
+
+			<p>And that's the password for the next level!</p>
+
+			<hr>
+
+			<div class="level-links">
+				<a href="./level10.html">&lt;&#8209;Previous Level</a>
+				<a href="../../../index.html">Home&#8209;&gt;</a>
+			</div>
+		</div>
+
+		<div class="footer">
+			Copyright &#169; 2024 Lorentz0&#8209;m 
+		</div>
+	</body>
+</html>
