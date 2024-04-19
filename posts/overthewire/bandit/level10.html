@@ -4,7 +4,7 @@
 	<head>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>OverTheWire Bandit Introduction</title>
+		<title>Bandit Level 10 Write-up</title>
 		<link rel="stylesheet" href="../../styles.css">
 		<link rel="stylesheet" href="../../../shared.css">
 	</head>
@@ -24,32 +24,33 @@
 		</div>
 
 		<div class="page-content">
-			<h1 class="title">OverTheWire Bandit Wargame Introduction</h1>
+			<h1 class="title">OverTheWire Bandit Level 10 Write&#8209;up</h1>
 
 			<div class="article-info">
-				<div><img class="svg" src="../../../media/icons/calendar-days-solid.svg" alt="an icon of a calendar"> Updated: 14/04/2024</div>
+				<div><img class="svg" src="../../../media/icons/calendar-days-solid.svg" alt="an icon of a calendar"> Updated: 19/04/2024</div>
 				<div>| <img class="svg" src="../../../media/icons/clock-solid.svg" alt="an icon of a clock"> 0 min read</div>
 			</div>
 
 			<hr>
 
-			<p>Welcome to Bandit!</p>
-
 			<p>
-				This is a wargame hosted on <a href="https://overthewire.org/wargames/bandit/" target="_blank" rel="noopener noreferrer">overthewire.org</a>.
-				It's purpose is to teach the fundamentals required to be able to play other wargames.
-				It is also a great way to learn how to use Linux! Beating one level means getting the password for
-				the next one, so that's the goal we're going to have in mind. If you ever get stuck on something
-				you don't know, be patient and continue your research.
+				The data.txt file now is base64 encoded, the command which will help us is base64,
+				which decodes base64 data and vice versa, make sure to include the -d flag so
+				decoding is specified.
 			</p>
 
-			<p>Have fun learning!</p>
+			<pre>
+				<code>
+					bandit10@bandit:~$ base64 -d data.txt
+					The password is 6zPeziLdR2RKNdNYFNb6nVCKzphlXHBM
+				</code>
+			</pre>
 
 			<hr>
 
 			<div class="level-links">
-				<a href="../../../index.html">&lt;&#8209;Home</a>
-				<a href="./level00.html">First Level&#8209;&gt;</a>
+				<a href="./level09.html">&lt;&#8209;Previous Level</a>
+				<a href="./level11.html">Next Level&#8209;&gt;</a>
 			</div>
 		</div>
 
