@@ -34,21 +34,34 @@ hr {
 changing the code indentation */
 pre, code {
 	white-space: pre-line;
+	background-color: rgb(20, 20, 20);
 }
 
 pre {
 	overflow: auto;
-	background-color: rgb(20, 20, 20);
 	border-radius: var(--radius);
 	padding: 0rem 0.8rem 0rem 0.8rem;
 }
 
-div.explanation {
+div.explanation,
+div.notes-and-tips {
 	overflow: auto;
 }
 
 .page-content .explanation > ul {
 	margin-left: 2rem;
+}
+
+.page-content .notes-and-tips > ol {
+	margin-left: 2.5rem;
+}
+
+.notes-and-tips ol li {
+	counter-increment: list;
+}
+
+.notes-and-tips ol li::marker {
+	content: counter(list) ")\a0";
 }
 
 .page-content > .notes-and-tips {

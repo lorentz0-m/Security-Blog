@@ -71,9 +71,9 @@
 			<div class="explanation">
 				Explanation of the command:
 				<ul>
-					<li>with inhere/ we specify our search to start from the inhere directory</li>
-					<li>-type f refers only to files and excludes directories</li>
-					<li>-size 1033c specifies the file size to be exactly 1033 bytes</li>
+					<li>with <code>inhere/</code> we specify our search to start from the inhere directory</li>
+					<li><code>-type f</code> refers only to files and excludes directories</li>
+					<li><code>-size 1033c</code> specifies the file size to be exactly 1033 bytes</li>
 				</ul>
 			</div>
 
@@ -92,12 +92,17 @@
 			<div class="explanation">
 				Explanation of the command:
 				<ul>
-					<li>! -executable uses the NOT (!) operator to reverse the effect of the -executable
-					option, which matches files that are executable for the user running the command</li>
-					<li>-exec strings {} + executes the strings command on each item that comes up,
-					filtering out the non human-readable characters, the brackets are a placeholder
-					and the plus sign is the command terminator, for more details reference the find
-					manual page</li>
+					<li>
+						<code>! -executable</code> uses the NOT (!) operator to reverse the effect of the
+						<code>-executable</code> option, which matches files that are executable for the
+						user running the command
+					</li>
+					<li>
+						<code>-exec strings {} +</code> executes the strings command on each item that comes up,
+						filtering out the non human-readable characters, the brackets are a placeholder
+						and the plus sign is the command terminator, for more details reference the find
+						manual page
+					</li>
 				</ul>
 			</div>
 
@@ -118,12 +123,17 @@
 				Explanation of the command:
 
 				<ul>
-					<li>-ab is a combination of the -a flag, which <em>includes</em> files in the storage report,
-					and the -b switch that is used to get bytes in the output</li>
-					<li>inhere/ indicates the directory we want to search</li>
+					<li>
+						<code>-ab</code> is a combination of the <code>-a</code> flag, which
+						<em>includes</em> files in the storage report, and the <code>-b</code>
+						switch that is used to get bytes in the output
+					</li>
+					<li><code>inhere/</code> indicates the directory we want to search</li>
 					<li>the | symbol is called a pipe, as it "pipes" the output of one command to another</li>
-					<li>in this case we are receiving the input with the grep command, which filters
-					out the results that dont include the string "1033", meaning 1033 bytes in our context</li>
+					<li>
+						in this case we are receiving the input with the grep command, which filters
+						out the results that dont include the string "1033", meaning 1033 bytes in our context
+					</li>
 				</ul>
 			</div>
 
