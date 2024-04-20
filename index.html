@@ -31,6 +31,17 @@
 
 				<div class="card">
 					<div class="article-info">
+						<div><img class="svg" src="./media/icons/calendar-days-solid.svg" alt="an icon of a calendar"> Updated: 20/04/2024</div>
+						<div>| <img class="svg" src="./media/icons/clock-solid.svg" alt="an icon of a clock"> 5 min read</div>
+					</div>
+					<a href="./posts/overthewire/bandit/level12.html"><h1>OverTheWire Bandit Level 12 Write&#8209;up</h1></a>
+					Hexdumps, decompression and tar files
+				</div>
+
+				<hr>
+
+				<div class="card">
+					<div class="article-info">
 						<div><img class="svg" src="./media/icons/calendar-days-solid.svg" alt="an icon of a calendar"> Updated: 19/04/2024</div>
 						<div>| <img class="svg" src="./media/icons/clock-solid.svg" alt="an icon of a clock"> 1 min read</div>
 					</div>
@@ -71,94 +82,317 @@
 					The uniq and sort commands
 				</div>
 
-				<hr>
-
-				<div class="card">
-					<div class="article-info">
-						<div><img class="svg" src="./media/icons/calendar-days-solid.svg" alt="an icon of a calendar"> Updated: 17/04/2024</div>
-						<div>| <img class="svg" src="./media/icons/clock-solid.svg" alt="an icon of a clock"> 0.5 min read</div>
-					</div>
-					<a href="./posts/overthewire/bandit/level07.html"><h1>OverTheWire Bandit Level 7 Write&#8209;up</h1></a>
-					The grep command
-				</div>
-
 			</div>
 
 			<div class="page-content">
-				<h1 class="title">OverTheWire Bandit Level 6 Write&#8209;up</h1>
+				<h1 class="title">OverTheWire Bandit Level 12 Write&#8209;up</h1>
 
 				<div class="article-info">
-					<div><img class="svg" src="./media/icons/calendar-days-solid.svg" alt="an icon of a calendar"> Updated: 17/04/2024</div>
-					<div>| <img class="svg" src="./media/icons/clock-solid.svg" alt="an icon of a clock"> 1.5 min read</div>
+					<div><img class="svg" src="./media/icons/calendar-days-solid.svg" alt="an icon of a calendar"> Updated: 20/04/2024</div>
+					<div>| <img class="svg" src="./media/icons/clock-solid.svg" alt="an icon of a clock"> 5 min read</div>
 				</div>
 
 				<hr>
 
-				<div class="explanation">
-					In this level the properties of our file are:
-					<ul>
-						<li>owned by user bandit7</li>
-						<li>owned by group bandit6</li>
-						<li>33 bytes in size</li>
-					</ul>
-				</div>
-
 				<p>
-					However, if we go ahead and tackle each one of the conditions with the appropriate
-					options, you'll quickly see that the output is drowned in "Permission denied" errors.
+					The information we are provided with in this level is that data.txt is a hexdump of a file
+					that has been repeatedly compressed.
 				</p>
 				
 				<pre>
 					<code>
-						bandit6@bandit:~$ find / -type f -user bandit7 -group bandit6 -size 33c
-						find: ‘/etc/ssl/private’: Permission denied
-						find: ‘/etc/polkit-1/localauthority’: Permission denied
-						find: ‘/etc/sudoers.d’: Permission denied
+						bandit12@bandit:~$ cat data.txt
+						00000000: 1f8b 0808 6855 1e65 0203 6461 7461 322e  ....hU.e..data2.
+						00000010: 6269 6e00 013d 02c2 fd42 5a68 3931 4159  bin..=...BZh91AY
+						00000020: 2653 5948 1b32 0200 0019 ffff faee cff7  &SYH.2..........
 						---snip---
 					</code>
 				</pre>
-				
+
 				<p>
-					The reason for that is that we told the command to start searching from the root of
-					the filesystem, so encountering files which we do not have the permissions to view is
-					inevitable. We can solve this issue by redirecting all stderr (standard error)
-					streams to the /dev/null file, which is a place we can safely discard any data in.
+					First things first, since overthewire suggests to work with a directory under /tmp with a
+					hard-to-guess name, let's create one by using the mktemp command. Which creates a temporary
+					directory with a random name. Don't forget to use the <code>-d</code> flag to indicate a dir
+					instead of a file!
 				</p>
 				
 				<pre>
 					<code>
-						bandit6@bandit:~$ find / -type f -user bandit7 -group bandit6 -size 33c 2> /dev/null
-						/var/lib/dpkg/info/bandit7.password
+						bandit12@bandit:~$ mktemp -d
+						/tmp/tmp.WXPMXxpA6J
+					</code>
+				</pre>
+
+				<p>
+					Now we will need a command to revert the file back to binary for us so we can try and
+					decrompress it afterwards. The right tool for the job in this case is xxd, which can make
+					or reverse hexdumps.
+				</p>
+				
+				<pre>
+					<code>
+						bandit12@bandit:~$ xxd -r data.txt > /tmp/tmp.WXPMXxpA6J/binary
+						bandit12@bandit:~$ cd /tmp/tmp.WXPMXxpA6J
+						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ ls
+						binary
 					</code>
 				</pre>
 
 				<div class="explanation">
 					Explanation of the command:
 					<ul>
-						<li>2 is the file handle for stderr streams</li>
-						<li>> is the redirect operator, it is used to redirect the output to a file
-						instead of the console</li>
-						<li>/dev/null is our target file</li>
+						<li>the <code>-r</code> flag is used to reverse the hexdump operation</li>
+						<li>
+							the <code>></code> operator redirects the output to a file called binary under
+							the generated tmp directory, and since it doesn't exist it creates the file as well,
+							note that the name of the file could be anything
+						</li>
+					</ul>
+				</div>
+				
+				<pre>
+					<code>
+						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ cat binary
+						h44�A��=�4hh��hd��1AY&SYH��91�;,�
+						---snip---
+					</code>
+				</pre>
+
+				<p>
+					It's still hard to make sense of the output. To point ourselves in the right direction
+					we will use the file command which we encountered back
+					in <a href="./posts/overthewire/bandit/level04.html" target="_blank">level 4</a>:
+				</p>
+				
+				<pre>
+					<code>
+						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ file binary
+						binary: gzip compressed data, was "data2.bin" ---snip---
+					</code>
+				</pre>
+
+				<p>
+					Turns out the file was compressed by the gzip algorithm, to unzip it we can use the
+					convenient gzip command:
+				</p>
+
+				<pre>
+					<code>
+						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ gzip -dk binary
+						gzip: binary: unknown suffix -- ignored
+					</code>
+				</pre>
+
+				<div class="explanation">
+					Explanation of the command:
+					<ul>
+						<li>
+							the <code>-d</code> flag specifies decompression, instead of <code>gzip -d</code>
+							you could also use the alias <code>gunzip</code>
+						</li>
+						<li>the <code>-k</code> switch indicates to keep the original file</li>
 					</ul>
 				</div>
 
-				<p>And the file with the password for the next level appears!</p>
+				<p>
+					However we get an "unknown suffix" error. That's because by convention, the name of a
+					file compressed with gzip should end with either <code>.gz</code> or <code>.z</code>.
+					To rename files in Linux you can use the mv command and move them in the same directory
+					with a different name like so:
+				</p>
 				
 				<pre>
 					<code>
-						bandit6@bandit:~$ cat /var/lib/dpkg/info/bandit7.password
-						z7WtoNQU2XfjmMtWA8u5rN4vzqu4v99S
+						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ mv binary data2.gz
+						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ gzip -dk data2.gz
+						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ ls
+						data2  data2.gz
 					</code>
 				</pre>
-				
-				<p>You can also directly cat it to the console by modifying the find command:</p>
+
+				<div class="notes-and-tips">
+					<strong>note:</strong> to view statistics about the compressed files you can use gzip
+					with the <code>-l</code> flag
+				</div>
+
+				<pre>
+					<code>
+						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ gzip -l data2.gz
+								compressed        uncompressed  ratio uncompressed_name
+										606                 573  -0.9% data2
+					</code>
+				</pre>
+
+				<p>Let's use the file command again to see what changes occured.</p>
 				
 				<pre>
 					<code>
-						bandit6@bandit:~$ find / -type f -user bandit7 -group bandit6 -size 33c -exec cat {} + 2> /dev/null
-						z7WtoNQU2XfjmMtWA8u5rN4vzqu4v99S
+						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ file data2
+						data2: bzip2 compressed data, block size = 900k
 					</code>
 				</pre>
+
+				<p>
+					This time we are dealing with bzip2 compressed data, so we will resort to the bzip2
+					command. The bzip2 command-line options are very similar to those of gzip. Let's rename
+					the file again so it ends with .bz2 and apply the same flags for the decompression.
+				</p>
+
+				<div class="notes-and-tips">
+					<strong>note:</strong>
+					<ol>
+						<li>having the .bz2 or .bz extension in this case isn't required like it was with gzip</li>
+						<li>bzip2 cannot compress directories</li>
+						<li>The gunzip alternative of bzip2 is bunzip2</li>
+					</ol>
+				</div>
+
+				<pre>
+					<code>
+						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ mv data2 data3.bz2
+						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ bzip2 -dk data3.bz2
+						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ ls
+						data2.gz  data3  data3.bz2
+						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ file data3
+						data3: gzip compressed data, was "data4.bin" ---snip---
+					</code>
+				</pre>
+
+				<p>gzip compressed data again! At this point we can redo the previous gzip process.</p>
+				
+				<pre>
+					<code>
+						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ mv data3 data4.gz
+						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ gzip -dk data4.gz
+						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ ls
+						data2.gz  data3.bz2  data4  data4.gz
+						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ file data4
+						data4: POSIX tar archive (GNU)
+					</code>
+				</pre>
+
+				<p>
+					From the output we can understand that we'll have to deal with a tar archive. The name
+					tar originally came from the phrase "Tape ARchive", from the days where magnetic tape
+					was used to store data. Tar files are simply collections of many other files. To handle
+					them we will use the tar command-line utility.
+				</p>
+				
+				<pre>
+					<code>
+						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ tar -tvf data4
+						-rw-r--r-- root/root     10240 &lt;date&gt;  &lt;time&gt; data5.bin
+					</code>
+				</pre>
+				
+				<div class="explanation">
+					Explanation of the command:
+					<ul>
+						<li><code>-t</code> or <code>--list</code> lists the contents of an archive</li>
+						<li>
+							<code>-v</code> means verbose, we are asking the command to provide a more
+							detailed output, it is a very common flag among command-line programs, most
+							commands usually include it</li>
+						<li>
+							<code>-f</code> or <code>-file=</code> specifies the file name of the archive
+							we want to target
+						</li>
+					</ul>
+				</div>
+
+				<p>
+					We can see that in this case our archive is made up of only one file; data5.bin. To
+					extract it we can execute
+				</p>
+				
+				<pre>
+					<code>
+						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ tar -xvf data4
+						data5.bin
+					</code>
+				</pre>
+
+				<div class="explanation">
+					Explanation of the command:
+					<ul>
+						<li><code>-x</code> or <code>--extract</code> is used to extract the members of the archive</li>
+					</ul>
+				</div>
+
+				<pre>
+					<code>
+						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ file data5.bin
+						data5.bin: POSIX tar archive (GNU)
+					</code>
+				</pre>
+
+				<p>data5.bin happens to be a tar archive as well! Let's execute the previous command again</p>
+
+				<pre>
+					<code>
+						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ tar -xvf data5.bin
+						data6.bin
+						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ file data6.bin
+						data6.bin: bzip2 compressed data, block size = 900k
+					</code>
+				</pre>
+
+				<p>bzip2 compressed data once more, let's keep applying the previous steps</p>
+				
+				<pre>
+					<code>
+						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ mv data6.bin data7.bz2
+						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ bzip2 -dk data7.bz2
+						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ file data7
+						data7: POSIX tar archive (GNU)
+						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ tar -xvf data7
+						data8.bin
+						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ file data8.bin
+						data8.bin: gzip compressed data, was "data9.bin" ---snip---
+						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ mv data8.bin data9.gz
+						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ gzip -dk data9.gz
+						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ ls
+						data2.gz  data3.bz2  data4  data4.gz  data5.bin  data7  data7.bz2  data9  data9.gz
+						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ file data9
+						data9: ASCII text
+					</code>
+				</pre>
+
+				<p>File data9 happens to be ASCII text, what could that be?</p>
+				
+				<pre>
+					<code>
+						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ cat data9
+						The password is wbWdlBxEir4CaE8LaPhauuOo6pwRmrDw
+					</code>
+				</pre>
+
+				<p>
+					And finally, after lots of decompressing, we get the password for the next level!
+					Take a note of the password and make sure to delete the directory under /tmp so
+					we don't leave any unnecessary files stored in the server.
+				</p>
+				
+				<pre>
+					<code>
+						bandit12@bandit:~$ rm -r /tmp/tmp.WXPMXxpA6J
+					</code>
+				</pre>
+
+				<div class="explanation">
+					Explanation of the command:
+					<ul>
+						<li><code>rm</code> stands for remove and is used to remove files</li>
+						<li>
+							<code>-r</code> or <code>--recursive</code> means to delete directories and
+							their contents recursively, there is also the <code>rmdir</code> command but
+							it only works with empty directories
+						</li>
+					</ul>
+				</div>
+
+				<p>Onto level 13!</p>
+
 			</div>
 
 		</div>
