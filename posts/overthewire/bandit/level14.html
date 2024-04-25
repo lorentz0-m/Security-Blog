@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Bandit Level 14 Write-up</title>
+		<link rel="stylesheet" href="../../styles.css">
+		<link rel="stylesheet" href="../../../shared.css">
+	</head>
+
+	<body>
+		<div class="header">
+			<div class="profile">
+				<div class="username"><a href="../../../index.html">Lorentz0&#8209;m</a></div>
+				<div class="short-description">CTF write-ups and security related topics</div>
+			</div>
+
+			<ul>
+				<li><a href="../../../index.html">Home</a></li>
+				<li><a href="../../all_articles.html">All Posts</a></li>
+				<li><a href="../../../about.html">About</a></li>
+			</ul>
+		</div>
+
+		<div class="page-content">
+			<h1 class="title">OverTheWire Bandit Level 14 Write&#8209;up</h1>
+
+			<div class="article-info">
+				<div><img class="svg" src="../../../media/icons/calendar-days-solid.svg" alt="an icon of a calendar"> Updated: 25/04/2024</div>
+				<div>| <img class="svg" src="../../../media/icons/clock-solid.svg" alt="an icon of a clock"> 0.5 min read</div>
+			</div>
+
+			<hr>
+
+			<p>
+				The hint for getting the password this time is to submit the credentials of the current level
+				to port 30000 on localhost. First of all, when you are already connected to a level,
+				you have access to its password from a file named after your username under
+				<code>/etc/bandit_pass</code>. In this case we have:
+			</p>
+			
+			<pre>
+				<code>
+					bandit14@bandit:~$ cat /etc/bandit_pass/bandit14
+					fGrHPx402xGC7U7rXKDaxiWFTOiF0ENq
+				</code>
+			</pre>
+
+			<p>
+				Now we need a utility to create a connection with our machine (or localhost, pretty much the
+				overthewire server we connected to through SSH) on port 30000  so we can submit the password.
+				The right tool for the job is netcat, also known as "nc", which can read and write data across
+				network connections. We can pipe the content of bandit14 to nc like so:
+			</p>
+			
+			<pre>
+				<code>
+					bandit14@bandit:~$ cat /etc/bandit_pass/bandit14 | nc localhost 30000
+					Correct!
+					jN2kgmIXJ6fShzhT2avhotn4Zcka6tnt
+				</code>
+			</pre>
+
+			<div class="explanation">
+				Explanation of the command:
+				<ul>
+					<li>localhost refers to the target machine</li>
+					<li>
+						30000 is the port number we want to connect to, notice the <code>-p</code> flag isn't
+						required in this case like it is with ssh, for more details check out the manpage of netcat
+					</li>
+				</ul>
+			</div>
+
+			<p>Level 14 done!</p>
+
+			<hr>
+
+			<div class="level-links">
+				<a href="./level13.html">&lt;&#8209;Previous Level</a>
+				<a href="../../../index.html">Home&#8209;&gt;</a>
+			</div>
+		</div>
+
+		<div class="footer">
+			Copyright &#169; 2024 Lorentz0&#8209;m 
+		</div>
+	</body>
+</html>
