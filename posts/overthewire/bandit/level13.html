@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Bandit Level 13 Write-up</title>
+		<link rel="stylesheet" href="../../styles.css">
+		<link rel="stylesheet" href="../../../shared.css">
+	</head>
+
+	<body>
+		<div class="header">
+			<div class="profile">
+				<div class="username"><a href="../../../index.html">Lorentz0&#8209;m</a></div>
+				<div class="short-description">CTF write-ups and security related topics</div>
+			</div>
+
+			<ul>
+				<li><a href="../../../index.html">Home</a></li>
+				<li><a href="../../all_articles.html">All Posts</a></li>
+				<li><a href="../../../about.html">About</a></li>
+			</ul>
+		</div>
+
+		<div class="page-content">
+			<h1 class="title">OverTheWire Bandit Level 13 Write&#8209;up</h1>
+
+			<div class="article-info">
+				<div><img class="svg" src="../../../media/icons/calendar-days-solid.svg" alt="an icon of a calendar"> Updated: 25/04/2024</div>
+				<div>| <img class="svg" src="../../../media/icons/clock-solid.svg" alt="an icon of a clock"> 0.5 min read</div>
+			</div>
+
+			<hr>
+
+			<p>This time we get a private SSH key that can be used to log into the next level</p>
+			
+			<pre>
+				<code>
+					bandit13@bandit:~$ ls
+					sshkey.private
+					bandit13@bandit:~$ cat sshkey.private
+					-----BEGIN RSA PRIVATE KEY-----
+					MIIEpAIBAAKCAQEAxkkOE83W2cOT7IWhFc9aPaaQmQDdgzuXCv+ppZHa++buSkN+
+					gg0tcr7Fw8NLGa5+Uzec2rEg0WmeevB13AIoYp0MZyETq46t+jk9puNwZwIt9XgB
+											---snip---
+					kAWpXbv5tbkkzbS0eaLPTKgLzavXtQoTtKwrjpolHKIHUz6Wu+n4abfAIRFubOdN
+					/+aLoRQ0yBDRbdXMsZN/jvY44eM+xRLdRVyMmdPtP8belRi2E2aEzA==
+					-----END RSA PRIVATE KEY-----
+				</code>
+			</pre>
+
+			<p>
+				To use the sshkey.private file we have to add the <code>-i</code> flag in the ssh command,
+				which specifies the identity file we want to use.
+			</p>
+			
+			<pre>
+				<code>
+					bandit13@bandit:~$ ssh -i sshkey.private bandit14@bandit.labs.overthewire.org -p 2220
+				</code>
+			</pre>
+
+			<p>
+				After executing the command make sure to confirm the SSH connection, and that was it!
+				Alternatively you can use localhost instead of the overthewire domain name to connect:
+			</p>
+
+			<pre>
+				<code>
+					bandit13@bandit:~$ ssh -i sshkey.private bandit14@localhost -p 2220
+				</code>
+			</pre>
+
+			<div class="explanation">
+				Explanation of the command:
+				<ul>
+					<li>
+						the "localhost" hostname refers to the current computer used to access it, the IP
+						of localhost is 127.0.0.1 which is the standard address for IPv4 loopback traffic,
+						meaning network traffic that is sent to the same machine that you are using
+					</li>
+				</ul>
+			</div>
+
+			<hr>
+
+			<div class="level-links">
+				<a href="./level12.html">&lt;&#8209;Previous Level</a>
+				<a href="./level14.html">Next Level&#8209;&gt;</a>
+			</div>
+		</div>
+
+		<div class="footer">
+			Copyright &#169; 2024 Lorentz0&#8209;m 
+		</div>
+	</body>
+</html>
