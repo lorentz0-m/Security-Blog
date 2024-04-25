@@ -27,7 +27,7 @@
 			<h1 class="title">OverTheWire Bandit Level 11 Write&#8209;up</h1>
 
 			<div class="article-info">
-				<div><img class="svg" src="../../../media/icons/calendar-days-solid.svg" alt="an icon of a calendar"> Updated: 19/04/2024</div>
+				<div><img class="svg" src="../../../media/icons/calendar-days-solid.svg" alt="an icon of a calendar"> Updated: 25/04/2024</div>
 				<div>| <img class="svg" src="../../../media/icons/clock-solid.svg" alt="an icon of a clock"> 1 min read</div>
 			</div>
 
@@ -79,6 +79,28 @@
 			</div>
 
 			<p>And that's the password for the next level!</p>
+
+			<p>
+				There happens to be an alternative solution with vim. Open up the file, make sure you are 
+				in command mode, and then hit <code>g??</code> to apply rot13 on the entire line!
+			</p>
+
+			<pre>
+				<code>
+					bandit11@bandit:~$ vim data.txt
+
+					Gur cnffjbeq vf WIAOOSFzMjXXBC0KoSKBbJ8puQm5lIEi
+					g??
+					The password is JVNBBFSmZwKKOP0XbFXOoW8chDz5yVRv
+				</code>
+			</pre>
+
+			<div class="notes-and-tips">
+				<strong>note:</strong> Vim is a powerful terminal editor with plenty of useful commands.
+				If you are interested in learning vim, make sure it is installed on your local machine
+				and then execute <code>$ vimtutor</code>. It will open up an introductory lesson for
+				the editor!</p>
+			</div>
 
 			<hr>
 
