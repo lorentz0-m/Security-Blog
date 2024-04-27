@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Bandit Level 15 Write-up</title>
+		<link rel="stylesheet" href="../../styles.css">
+		<link rel="stylesheet" href="../../../shared.css">
+	</head>
+
+	<body>
+		<div class="header">
+			<div class="profile">
+				<div class="username"><a href="../../../index.html">Lorentz0&#8209;m</a></div>
+				<div class="short-description">CTF write-ups and security related topics</div>
+			</div>
+
+			<ul>
+				<li><a href="../../../index.html">Home</a></li>
+				<li><a href="../../all_articles.html">All Posts</a></li>
+				<li><a href="../../../about.html">About</a></li>
+			</ul>
+		</div>
+
+		<div class="page-content">
+			<h1 class="title">OverTheWire Bandit Level 15 Write&#8209;up</h1>
+
+			<div class="article-info">
+				<div><img class="svg" src="../../../media/icons/calendar-days-solid.svg" alt="an icon of a calendar"> Updated: 27/04/2024</div>
+				<div>| <img class="svg" src="../../../media/icons/clock-solid.svg" alt="an icon of a clock"> 1 min read</div>
+			</div>
+
+			<hr>
+
+			<p>
+				In this level we have to submit the current password on localhost again. However, this time
+				we have to connect over port 30001 and use SSL encryption.
+			</p>
+
+			<p>
+				SSL stands for Secure Sockets Layer. It is a security technology used for establishing
+				an encrypted link between a server and a client. The command we're going to use for
+				it is called openssl. It supports various cryptography tools including s_client, which
+				implements a simple client for us to connect to a remote host via SSL.
+			</p>
+
+			<p>The syntax is as follows. However, at first glance the command isn't working as intented.</p>
+			
+			<pre>
+				<code>
+					bandit15@bandit:~$ cat /etc/bandit_pass/bandit15 | openssl s_client -connect localhost:30001
+					---snip--- (connection data)
+					read R BLOCK
+					DONE
+				</code>
+			</pre>
+
+			<div class="explanation">
+				Explanation of the command:
+				<ul>
+					<li><code>-connect host:port</code>, this time we separate our host and port number with
+						a colon, in contrast to the ssh and netcat commands</li>
+				</ul>
+			</div>
+
+			<p>
+				This is because by default, after a connection is established with an SSL server, s_client
+				enters interactive mode, which will display any received data from the server and send any
+				key presses back. Since we didn't input any keypresses the end of the "file" was reached and
+				the connection closed down. To go around this problem we can use the <code>-ign_eof</code>
+				option, which shuts down the connection only when the end of the file is reached in the input,
+				in our case the password of the current level. We can further add the <code>-quiet</code>
+				switch that implements <code>-ign_eof</code> but summarises the output as well.
+			</p>
+			
+			<pre>
+				<code>
+					bandit15@bandit:~$ cat /etc/bandit_pass/bandit15 | openssl s_client -quiet -connect localhost:30001
+					Can't use SSL_get_servername
+					depth=0 CN = localhost
+					--snip---
+					verify return:1
+					Correct!
+					JQttfApK4SeyHwDlI9SXGR50qclOAil1
+				</code>
+			</pre>
+
+			<p>And just like that the server returned the password for the next challenge!</p>
+	
+			<hr>
+
+			<div class="level-links">
+				<a href="./level14.html">&lt;&#8209;Previous Level</a>
+				<a href="../../../index.html">Home&#8209;&gt;</a>
+			</div>
+		</div>
+
+		<div class="footer">
+			Copyright &#169; 2024 Lorentz0&#8209;m 
+		</div>
+	</body>
+</html>
