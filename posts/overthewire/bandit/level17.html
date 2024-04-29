@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Bandit Level 17 Write-up</title>
+		<link rel="stylesheet" href="../../styles.css">
+		<link rel="stylesheet" href="../../../shared.css">
+	</head>
+
+	<body>
+		<div class="header">
+			<div class="profile">
+				<div class="username"><a href="../../../index.html">Lorentz0&#8209;m</a></div>
+				<div class="short-description">CTF write-ups and security related topics</div>
+			</div>
+
+			<ul>
+				<li><a href="../../../index.html">Home</a></li>
+				<li><a href="../../all_articles.html">All Posts</a></li>
+				<li><a href="../../../about.html">About</a></li>
+			</ul>
+		</div>
+
+		<div class="page-content">
+			<h1 class="title">OverTheWire Bandit Level 17 Write&#8209;up</h1>
+
+			<div class="article-info">
+				<div><img class="svg" src="../../../media/icons/calendar-days-solid.svg" alt="an icon of a calendar"> Updated: 29/04/2024</div>
+				<div>| <img class="svg" src="../../../media/icons/clock-solid.svg" alt="an icon of a clock"> 0 min read</div>
+			</div>
+
+			<hr>
+
+			<p>We have two files our home directory, passwords.old and passwords.new</p>
+
+			<pre>
+				<code>
+					bandit17@bandit:~$ ls
+					passwords.new  passwords.old
+				</code>
+			</pre>
+
+			<p>
+				The hint is that the password for the next level is the only line that has been changed
+				between the old and new password files. We can easily compare the two files line by line
+				to determine any differences by using the diff command like so:
+			</p>
+
+			<pre>
+				<code>
+					bandit17@bandit:~$ diff passwords.old passwords.new
+					42c42
+					&lt; p6ggwdNHncnmCNxuAt0KtKVq185ZU7AW
+					---
+					&gt; hga5tuuCLF6fFzUpnagiMN8ssu9LFrdg
+				</code>
+			</pre>
+
+			<p>
+				The bottom line has been replaced in the second file so it's the password we were
+				looking for!
+			</p>
+
+			<div class="notes-and-tips">
+				<strong>note:</strong> if you prefer a colored output (for distinguishing
+				differences more easily) you can use the <code>colordiff</code>
+				command, which has the same functionality but adds color to stdout!
+				However it doesn't appear to be installed on overthewire.
+			</div>
+
+			<hr>
+
+			<div class="level-links">
+				<a href="./level16.html">&lt;&#8209;Previous Level</a>
+				<a href="../../../index.html">Home&#8209;&gt;</a>
+			</div>
+		</div>
+
+		<div class="footer">
+			Copyright &#169; 2024 Lorentz0&#8209;m 
+		</div>
+	</body>
+</html>
