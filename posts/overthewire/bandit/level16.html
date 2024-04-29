@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Bandit Level 16 Write-up</title>
+		<link rel="stylesheet" href="../../styles.css">
+		<link rel="stylesheet" href="../../../shared.css">
+	</head>
+
+	<body>
+		<div class="header">
+			<div class="profile">
+				<div class="username"><a href="../../../index.html">Lorentz0&#8209;m</a></div>
+				<div class="short-description">CTF write-ups and security related topics</div>
+			</div>
+
+			<ul>
+				<li><a href="../../../index.html">Home</a></li>
+				<li><a href="../../all_articles.html">All Posts</a></li>
+				<li><a href="../../../about.html">About</a></li>
+			</ul>
+		</div>
+
+		<div class="page-content">
+			<h1 class="title">OverTheWire Bandit Level 16 Write&#8209;up</h1>
+
+			<div class="article-info">
+				<div><img class="svg" src="../../../media/icons/calendar-days-solid.svg" alt="an icon of a calendar"> Updated: 29/04/2024</div>
+				<div>| <img class="svg" src="../../../media/icons/clock-solid.svg" alt="an icon of a clock"> 1.5 min read</div>
+			</div>
+
+			<hr>
+
+			<p>
+				This level is similar to the previous one, but we are asked to find the port we will have
+				to connect to ourselves. The available ports range from 31000 all the way up to 32000, we
+				don't know which of them are open and which of the open ports speak SSL.
+			</p>
+
+			<p>
+				To figure out our target port we will have to scan over all available options. A utility
+				that can do that for us (and many more) is nmap, which stands for "network mapper" and it
+				is an open source tool for network exploration and security auditing.
+			</p>
+
+			<p>
+				To specify service detection (also called version detection) in our scan we have to include
+				the <code>-sV</code> flag. However, since service detection requires multiple probes to be run per
+				open port, it slows down the scan speed significantly. To overcome this we will use the
+				<code>--version-intensity</code> option, which can limit the number of probes sent to each open port.
+				Intensity equal to one means light and nine tries all probes. Applying the previous we get:
+			</p>
+
+			<pre>
+				<code>
+					bandit16@bandit:~$ nmap -sV --version-intensity 1 -p 31000-32000 localhost
+					Starting Nmap 7.80 ( https://nmap.org ) at <date> <time> <time zone>
+					Nmap scan report for localhost (127.0.0.1)
+					Host is up (0.00010s latency).
+					Not shown: 996 closed ports
+					PORT      STATE SERVICE     VERSION
+					31046/tcp open  echo
+					31518/tcp open  ssl/echo
+					31691/tcp open  echo
+					31790/tcp open  ssl/unknown
+					31960/tcp open  echo
+					---snip---
+				</code>
+			</pre>
+
+			<p>
+				The results of our scan indicate that only two open ports speak SSL. 31518 runs the echo
+				service which we aren't interested in, but port 31790 runs an unknown service which might
+				just be what we are looking for.
+			</p>
+
+			<pre>
+				<code>
+					bandit16@bandit:~$ cat /etc/bandit_pass/bandit16 | openssl s_client -quiet -connect localhost:31790
+					---snip---
+					Correct!
+					-----BEGIN RSA PRIVATE KEY-----
+					MIIEogIBAAKCAQEAvmOkuifmMg6HL2YPIOjon6iWfbp7c3jx34YkYWqUH57SUdyJ
+					---snip---
+					vBgsyi/sN3RqRBcGU40fOoZyfAMT8s1m/uYv52O6IgeuZ/ujbjY=
+					-----END RSA PRIVATE KEY-----
+				</code>
+			</pre>
+
+			<p>
+				Turns out we got a private ssh key instead! Create a temporary file with mktemp and save
+				the key there so you can use it to connect to the next level. Afterwards you can read the
+				password from /etc/bandit_pass/bandit17 if you want to take a note of it.
+			</p>
+
+			<div class="notes-and-tips">
+				<strong>tip:</strong> with ctrl+shift+c you can copy text from the terminal and with ctrl+shift+v paste
+				it in a command-line editor like vim or nano.
+			</div>
+
+			<hr>
+
+			<div class="level-links">
+				<a href="./level15.html">&lt;&#8209;Previous Level</a>
+				<a href="../../../index.html">Home&#8209;&gt;</a>
+			</div>
+		</div>
+
+		<div class="footer">
+			Copyright &#169; 2024 Lorentz0&#8209;m 
+		</div>
+	</body>
+</html>
