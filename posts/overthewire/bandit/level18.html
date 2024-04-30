@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Bandit Level 18 Write-up</title>
+		<link rel="stylesheet" href="../../styles.css">
+		<link rel="stylesheet" href="../../../shared.css">
+	</head>
+
+	<body>
+		<div class="header">
+			<div class="profile">
+				<div class="username"><a href="../../../index.html">Lorentz0&#8209;m</a></div>
+				<div class="short-description">CTF write-ups and security related topics</div>
+			</div>
+
+			<ul>
+				<li><a href="../../../index.html">Home</a></li>
+				<li><a href="../../all_articles.html">All Posts</a></li>
+				<li><a href="../../../about.html">About</a></li>
+			</ul>
+		</div>
+
+		<div class="page-content">
+			<h1 class="title">OverTheWire Bandit Level 18 Write&#8209;up</h1>
+
+			<div class="article-info">
+				<div><img class="svg" src="../../../media/icons/calendar-days-solid.svg" alt="an icon of a calendar"> Updated: 30/04/2024</div>
+				<div>| <img class="svg" src="../../../media/icons/clock-solid.svg" alt="an icon of a clock"> 1 min read</div>
+			</div>
+
+			<hr>
+
+			<p>
+				The password for level 19 is stored in a readme file inside ~, the same way it was in
+				<a href="./level00.html">level 0</a>. However, the .bashrc script of bandit18 has been modified so it logs us out
+				every time we log in with SSH.  To go around this issue we can use the "command" option
+				of the ssh utility, which speficies a command to be executed on the remote host. In this
+				way we can cat the readme file in our console without having to log in.
+			</p>
+
+			<pre>
+				<code>
+					$ ssh bandit18@bandit.labs.overthewire.org -p 2220 command cat readme
+
+								_ 					   _ _ _
+								| |__   __ _ _ __   __| (_) |_
+								| '_ \ / _` | '_ \ / _` | | __|
+								| |_) | (_| | | | | (_| | | |_
+								|_.__/ \__,_|_| |_|\__,_|_|\__|
+
+							This is an OverTheWire game server.
+						More information on http://www.overthewire.org/wargames
+
+					bandit18@bandit.labs.overthewire.org's password:
+					awhqfNnAbc1naukrpqDYcF95h7HoMTrC
+				</code>
+			</pre>
+
+			<p>And there we go!</p>
+
+			<p>
+				Bonus: If you are curious about how the .bashrc script manages to log out users, you can
+				view the .bashrc file itself the same way we did with readme.
+			</p>
+
+			<div class="notes-and-tips">
+				<strong>note:</strong> the .bashrc script is located inside the home
+				directory and it is the script that bash runs every time a terminal opens.
+			</div>
+
+			<pre>
+				<code>
+					# ~/.bashrc: executed by bash(1) for non-login shells.
+					# ---snip---
+					echo 'Byebye !'
+					exit 0
+				</code>
+			</pre>
+
+			<p>Interesting, turns out it was the built-in exit command.</p>
+
+			<hr>
+
+			<div class="level-links">
+				<a href="./level17.html">&lt;&#8209;Previous Level</a>
+				<a href="../../../index.html">Home&#8209;&gt;</a>
+			</div>
+		</div>
+
+		<div class="footer">
+			Copyright &#169; 2024 Lorentz0&#8209;m 
+		</div>
+	</body>
+</html>
