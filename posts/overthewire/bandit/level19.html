@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Bandit Level 19 Write-up</title>
+		<link rel="stylesheet" href="../../styles.css">
+		<link rel="stylesheet" href="../../../shared.css">
+	</head>
+
+	<body>
+		<div class="header">
+			<div class="profile">
+				<div class="username"><a href="../../../index.html">Lorentz0&#8209;m</a></div>
+				<div class="short-description">CTF write-ups and security related topics</div>
+			</div>
+
+			<ul>
+				<li><a href="../../../index.html">Home</a></li>
+				<li><a href="../../all_articles.html">All Posts</a></li>
+				<li><a href="../../../about.html">About</a></li>
+			</ul>
+		</div>
+
+		<div class="page-content">
+			<h1 class="title">OverTheWire Bandit Level 19 Write&#8209;up</h1>
+
+			<div class="article-info">
+				<div><img class="svg" src="../../../media/icons/calendar-days-solid.svg" alt="an icon of a calendar"> Updated: 30/04/2024</div>
+				<div>| <img class="svg" src="../../../media/icons/clock-solid.svg" alt="an icon of a clock"> 2 min read</div>
+			</div>
+
+			<hr>
+
+			<p>A setuid binary happens to be inside our home directory</p>
+
+			<pre>
+				<code>
+					bandit19@bandit:~$ ls
+					bandit20-do
+					bandit19@bandit:~$ file bandit20-do
+					bandit20-do: setuid ELF 32-bit LSB executable ---snip---
+				</code>
+			</pre>
+
+			<p>
+				Our task is to execute the binary without arguments first, so we can find a way to use
+				it, and obtain the password for the next level afterwards. Without any arguments we get:
+			</p>
+
+			<pre>
+				<code>
+					bandit19@bandit:~$ ./bandit20-do
+					Run a command as another user.
+					Example: ./bandit20-do id
+					bandit19@bandit:~$ ./bandit20-do id
+					uid=11019(bandit19) gid=11019(bandit19) euid=11020(bandit20) groups=11019(bandit19)
+					bandit19@bandit:~$ id
+					uid=11019(bandit19) gid=11019(bandit19) groups=11019(bandit19)
+				</code>
+			</pre>
+
+			<p>
+				The output tells us that if we append a command as a command-line argument to the binary,
+				that command will be run as another user. We can distinguish which user it refers to if
+				we run the id command <i>with</i> the binary and without it. In the first case, we can see that
+				we have an effective user ID (euID) set to bandit20, which verifies that we will be acting
+				as bandit20 when using the binary (the name of the file is "bandit20-do" afterall). This
+				is very convenient in our situation! We know that each user has read access to the password
+				file of his own level. So we can use bandit20-do to get the password of level 20 like so:
+			</p>
+
+			<pre>
+				<code>
+					bandit19@bandit:~$ ./bandit20-do cat /etc/bandit_pass/bandit20
+					VxCazJaVykI6W36BkBU0mJTCM8rR95XT
+				</code>
+			</pre>
+
+			<p>
+				And there we go! To make things more clear as to why this worked; the reason the binary
+				is a setuid file is because bandit20-do has the set user ID (or SUID) special permission
+				enabled, as you can see:
+			</p>
+
+			<pre>
+				<code>
+					bandit19@bandit:~$ ls -lh bandit20-do
+					-rwsr-x---     1  bandit20  bandit19   15K    &lt;date&gt; &lt;time&gt; bandit20-do
+					(permissions)     (owner)   (group)   (size)                (file name)
+				</code>
+			</pre>
+
+			<div class="notes-and-tips">
+				<strong>note:</strong> the sequence of characters represents the permissions of: the owner of the file
+				(rws), the group (r-x) and everybody else (---). Where r=read, w=write, x=execute and
+				s=the SUID bit. A dash means the permission isn't granted.
+			</div>
+
+			<p>
+				Basically, the SUID bit indicates that any user can execute the file with the permissions
+				of the owner but those permissions don't extend beyond the use of that file. Here the
+				owner of the file is bandit20, that's why we can execute the file as that user.
+			</p>
+
+			<div class="notes-and-tips">
+				<strong>note:</strong> the fact that the SUID bit is lowercase ("s") indicates that the owner of the file
+				(bandit20) has execute permissions, otherwise it would be uppercase ("S") and we wouldn't
+				be able to execute the file.
+			</div>
+
+			<hr>
+
+			<div class="level-links">
+				<a href="./level18.html">&lt;&#8209;Previous Level</a>
+				<a href="../../../index.html">Home&#8209;&gt;</a>
+			</div>
+		</div>
+
+		<div class="footer">
+			Copyright &#169; 2024 Lorentz0&#8209;m 
+		</div>
+	</body>
+</html>
