@@ -23,6 +23,10 @@ h1 {
 	font-size: 1.25rem;
 }
 
+h2 {
+	font-size: 1.20rem;
+}
+
 hr {
 	width: 100%;
 	background-color: var(--white);
@@ -41,6 +45,12 @@ pre {
 	overflow: auto;
 	border-radius: var(--radius);
 	padding: 0rem 0.8rem 0rem 0.8rem;
+}
+
+code {
+	border-radius: var(--radius);
+	padding: 0.16rem;
+	padding-bottom: 0rem;
 }
 
 div.explanation,

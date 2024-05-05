@@ -31,6 +31,17 @@
 
 				<div class="card">
 					<div class="article-info">
+						<div><img class="svg" src="./media/icons/calendar-days-solid.svg" alt="an icon of a calendar"> Updated: 05/05/2024</div>
+						<div>| <img class="svg" src="./media/icons/clock-solid.svg" alt="an icon of a clock"> 5 min read</div>
+					</div>
+					<a href="./posts/overthewire/bandit/level20.html"><h1>OverTheWire Bandit Level 20 Write&#8209;up</h1></a>
+					Network ports, tmux and Unix job control
+				</div>
+
+				<hr>
+
+				<div class="card">
+					<div class="article-info">
 						<div><img class="svg" src="./media/icons/calendar-days-solid.svg" alt="an icon of a calendar"> Updated: 30/04/2024</div>
 						<div>| <img class="svg" src="./media/icons/clock-solid.svg" alt="an icon of a clock"> 2 min read</div>
 					</div>
@@ -71,327 +82,216 @@
 					Network scanning with nmap
 				</div>
 
-				<hr>
-
-				<div class="card">
-					<div class="article-info">
-						<div><img class="svg" src="./media/icons/calendar-days-solid.svg" alt="an icon of a calendar"> Updated: 27/04/2024</div>
-						<div>| <img class="svg" src="./media/icons/clock-solid.svg" alt="an icon of a clock"> 1 min read</div>
-					</div>
-					<a href="./posts/overthewire/bandit/level15.html"><h1>OverTheWire Bandit Level 15 Write&#8209;up</h1></a>
-					Openssl and s_client
-				</div>
-
 			</div>
 
 			<div class="page-content">
-				<h1 class="title">OverTheWire Bandit Level 12 Write&#8209;up</h1>
+				<h1 class="title">OverTheWire Bandit Level 20 Write&#8209;up</h1>
 
 				<div class="article-info">
-					<div><img class="svg" src="./media/icons/calendar-days-solid.svg" alt="an icon of a calendar"> Updated: 20/04/2024</div>
+					<div><img class="svg" src="./media/icons/calendar-days-solid.svg" alt="an icon of a calendar"> Updated: 05/05/2024</div>
 					<div>| <img class="svg" src="./media/icons/clock-solid.svg" alt="an icon of a clock"> 5 min read</div>
 				</div>
 
 				<hr>
 
-				<p>
-					The information we are provided with in this level is that data.txt is a hexdump of a file
-					that has been repeatedly compressed.
-				</p>
-				
-				<pre>
-					<code>
-						bandit12@bandit:~$ cat data.txt
-						00000000: 1f8b 0808 6855 1e65 0203 6461 7461 322e  ....hU.e..data2.
-						00000010: 6269 6e00 013d 02c2 fd42 5a68 3931 4159  bin..=...BZh91AY
-						00000020: 2653 5948 1b32 0200 0019 ffff faee cff7  &SYH.2..........
-						---snip---
-					</code>
-				</pre>
-
-				<p>
-					First things first, since overthewire suggests to work with a directory under /tmp with a
-					hard-to-guess name, let's create one by using the mktemp command. Which creates a temporary
-					directory with a random name. Don't forget to use the <code>-d</code> flag to indicate a dir
-					instead of a file!
-				</p>
-				
-				<pre>
-					<code>
-						bandit12@bandit:~$ mktemp -d
-						/tmp/tmp.WXPMXxpA6J
-					</code>
-				</pre>
-
-				<p>
-					Now we will need a command to revert the file back to binary for us so we can try and
-					decrompress it afterwards. The right tool for the job in this case is xxd, which can make
-					or reverse hexdumps.
-				</p>
-				
-				<pre>
-					<code>
-						bandit12@bandit:~$ xxd -r data.txt > /tmp/tmp.WXPMXxpA6J/binary
-						bandit12@bandit:~$ cd /tmp/tmp.WXPMXxpA6J
-						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ ls
-						binary
-					</code>
-				</pre>
-
-				<div class="explanation">
-					Explanation of the command:
-					<ul>
-						<li>the <code>-r</code> flag is used to reverse the hexdump operation</li>
-						<li>
-							the <code>></code> operator redirects the output to a file called binary under
-							the generated tmp directory, and since it doesn't exist it creates the file as well,
-							note that the name of the file could be anything
-						</li>
-					</ul>
-				</div>
-				
-				<pre>
-					<code>
-						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ cat binary
-						h44�A��=�4hh��hd��1AY&SYH��91�;,�
-						---snip---
-					</code>
-				</pre>
-
-				<p>
-					It's still hard to make sense of the output. To point ourselves in the right direction
-					we will use the file command which we encountered back
-					in <a href="./posts/overthewire/bandit/level04.html" target="_blank">level 4</a>:
-				</p>
-				
-				<pre>
-					<code>
-						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ file binary
-						binary: gzip compressed data, was "data2.bin" ---snip---
-					</code>
-				</pre>
-
-				<p>
-					Turns out the file was compressed by the gzip algorithm, to unzip it we can use the
-					convenient gzip command:
-				</p>
+				<p>We are dealing with a setuid binary again:</p>
 
 				<pre>
 					<code>
-						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ gzip -dk binary
-						gzip: binary: unknown suffix -- ignored
-					</code>
-				</pre>
-
-				<div class="explanation">
-					Explanation of the command:
-					<ul>
-						<li>
-							the <code>-d</code> flag specifies decompression, instead of <code>gzip -d</code>
-							you could also use the alias <code>gunzip</code>
-						</li>
-						<li>the <code>-k</code> switch indicates to keep the original file</li>
-					</ul>
-				</div>
-
-				<p>
-					However we get an "unknown suffix" error. That's because by convention, the name of a
-					file compressed with gzip should end with either <code>.gz</code> or <code>.z</code>.
-					To rename files in Linux you can use the mv command and move them in the same directory
-					with a different name like so:
-				</p>
-				
-				<pre>
-					<code>
-						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ mv binary data2.gz
-						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ gzip -dk data2.gz
-						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ ls
-						data2  data2.gz
+						bandit20@bandit:~$ ls -lh suconnect
+						-rwsr-x--- 1 bandit21 bandit20 16K &lt;date&gt; &lt;time&gt; suconnect
+						bandit20@bandit:~$ file suconnect
+						suconnect: setuid ELF 32-bit LSB executable ---snip---
+						bandit20@bandit:~$ ./suconnect
+						Usage: ./suconnect &lt;portnumber&gt;
+						This program will connect to the given port on localhost using TCP. If it receives
+						the correct password from the other side, the next password is transmitted back.
 					</code>
 				</pre>
 
 				<div class="notes-and-tips">
-					<strong>note:</strong> to view statistics about the compressed files you can use gzip
-					with the <code>-l</code> flag
+					<strong>note:</strong> TCP stands for Transmission Control Protocol, it is a standard network protocol
+					for making connections. For more info you can read the official RFC (Request For Comments)
+					<a href="https://www.ietf.org/rfc/rfc793.txt" target="_blank" rel="noopener noreferrer" >over here</a>.
 				</div>
 
-				<pre>
-					<code>
-						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ gzip -l data2.gz
-								compressed        uncompressed  ratio uncompressed_name
-										606                 573  -0.9% data2
-					</code>
-				</pre>
-
-				<p>Let's use the file command again to see what changes occured.</p>
-				
-				<pre>
-					<code>
-						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ file data2
-						data2: bzip2 compressed data, block size = 900k
-					</code>
-				</pre>
+				<p>
+					They way the program works is that it makes a connection to localhost on the port number
+					we specify. It then reads a line of text from that connection and compares it to
+					the password of our current level. If the strings match, it will transmit back the
+					credentials of the following challenge. Furthermore, to solve this level we will have to do
+					a similar process to that of <a href="./posts/overthewire/bandit/level14.html">level 14</a>, where we connected on localhost to port 30000
+					so we could receive the password. However, now the binary is the client and <i>we</i> will
+					have to act as the server by creating our own network process!
+				</p>
 
 				<p>
-					This time we are dealing with bzip2 compressed data, so we will resort to the bzip2
-					command. The bzip2 command-line options are very similar to those of gzip. Let's rename
-					the file again so it ends with .bz2 and apply the same flags for the decompression.
+					The tool we are going to use again is netcat or nc. Netcat is not restricted to sending
+					network packets. It also can listen on a port for connections. This gives us the
+					opportunity to connect an instance of netcat in a client-server relationship with
+					another process, which is exactly what we are looking for. Note that there won't be
+					any form of encryption going on as in SSL, for this use case though it isn't needed.
 				</p>
+
+				<p>
+					Ideally we would need 2 separate terminal windows to approach this problem, one for
+					having netcat in listen mode and one for executing the binary. So this is a very nice
+					opportunity to learn how to use tmux! However, you can also solve this challenge by
+					using job control alone, so I will demonstrate both ways.
+				</p>
+
+				<div>
+					<h2>TMUX (Terminal Multiplexer)</h2>
+					<p>
+						tmux  is  a terminal multiplexer: it enables a number of terminals to be created,
+						accessed, and controlled from a single screen. For our convenience it is already installed
+						in the overthewire server. To start a session simply execute <code>$ tmux</code> in your console.
+						To split your current pane in two vertical ones you can type <code>ctrl+b</code> and then <code>%</code>, or
+						<code>"</code> if you prefer horizontal terminals. To change between them press <code>ctrl+b</code> and then
+						use your arrow keys. If you want to terminate a console you can simply execute <code>$ exit</code>
+						or hit <code>ctrl+d</code>, and these are all of the basics you need to know! For more details and
+						info about the available options reference the tmux man page.
+					</p>
+				</div>
+
+				<p>
+					After you log in to level 20, start a tmux session and halve your terminal. In one console
+					execute the following command:
+				</p>
+
+				<pre>
+					<code>
+						bandit20@bandit:~$ netcat -l 5678
+					</code>
+				</pre>
+
+				<div class="explanation">
+					Explanation of the command:
+					<ul>
+						<li>
+							<code>-l</code> starts netcat in listen mode, it listens for connections on the port we
+							addressed. The port number doesn't matter in this case, you can chose any random number
+							you want. <em>Except</em> from the ports in the range 0 to 1023, since those are
+							"well-known" and you need root access for them.
+						</li>
+					</ul>
+				</div>
 
 				<div class="notes-and-tips">
-					<strong>note:</strong>
-					<ol>
-						<li>Having the .bz2 or .bz extension in this case isn't required like it was with gzip</li>
-						<li>bzip2 cannot compress directories</li>
-						<li>The gunzip alternative of bzip2 is bunzip2</li>
-					</ol>
+					<strong>note:</strong> The ports 0-1023 are called well-known since they are used by system processes
+					that provide widely used types of network services. For example, HTTPS which we use to
+					connect securely to websites runs on port 443, or SSH that we use for secure shell
+					connections runs by default on port 22. Therefore, for security reasons root privileges
+					are required.
 				</div>
 
-				<pre>
-					<code>
-						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ mv data2 data3.bz2
-						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ bzip2 -dk data3.bz2
-						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ ls
-						data2.gz  data3  data3.bz2
-						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ file data3
-						data3: gzip compressed data, was "data4.bin" ---snip---
-					</code>
-				</pre>
+				<p>
+					In the other console execute the binary, input the exact same port you have netcat
+					listening to:
+				</p>
 
-				<p>gzip compressed data again! At this point we can redo the previous gzip process.</p>
-				
 				<pre>
 					<code>
-						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ mv data3 data4.gz
-						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ gzip -dk data4.gz
-						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ ls
-						data2.gz  data3.bz2  data4  data4.gz
-						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ file data4
-						data4: POSIX tar archive (GNU)
+						bandit20@bandit:~$ ./suconnect 5678
 					</code>
 				</pre>
 
 				<p>
-					From the output we can understand that we'll have to deal with a tar archive. The name
-					tar originally came from the phrase "Tape ARchive", from the days where magnetic tape
-					was used to store data. Tar files are simply collections of many other files. To handle
-					them we will use the tar command-line utility.
+					The two network processes should connect to each other without a problem. Now copy the
+					password of the current level and paste it in the netcat session so it is send over
+					to the setuid program.
 				</p>
-				
-				<pre>
-					<code>
-						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ tar -tvf data4
-						-rw-r--r-- root/root     10240 &lt;date&gt;  &lt;time&gt; data5.bin
-					</code>
-				</pre>
-				
-				<div class="explanation">
-					Explanation of the command:
-					<ul>
-						<li><code>-t</code> or <code>--list</code> lists the contents of an archive</li>
-						<li>
-							<code>-v</code> means verbose, we are asking the command to provide a more
-							detailed output, it is a very common flag among command-line programs, most
-							commands usually include it</li>
-						<li>
-							<code>-f</code> or <code>-file=</code> specifies the file name of the archive
-							we want to target
-						</li>
-					</ul>
+
+				<div style="display: flex; justify-content: center; gap: 1rem;">
+					<pre>
+						<code>
+							bandit20@bandit:~$ netcat -l 5678
+							VxCazJaVykI6W36BkBU0mJTCM8rR95XT
+							NvEJF7oVjkddltPSrdKEFOllh9V1IBcq
+						</code>
+					</pre>
+					<pre>
+						<code>
+							bandit20@bandit:~$ ./suconnect 5678
+							Password matches, sending next password
+							Read: VxCazJaVykI6W36BkBU0mJTCM8rR95XT
+						</code>
+					</pre>
 				</div>
 
 				<p>
-					We can see that in this case our archive is made up of only one file; data5.bin. To
-					extract it we can execute
+					Turns out our thought process was correct! After you exit you will get the following
+					output from tmux:
 				</p>
-				
+
 				<pre>
 					<code>
-						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ tar -xvf data4
-						data5.bin
+						bandit20@bandit:~$ tmux
+						[exited]
 					</code>
 				</pre>
 
-				<div class="explanation">
-					Explanation of the command:
-					<ul>
-						<li><code>-x</code> or <code>--extract</code> is used to extract the members of the archive</li>
-					</ul>
+				<div>
+					<h2>Background and foreground processes (Unix job control)</h2>
+					<p>
+						In case you are trying to solve the challenge without using tmux, you can manage to
+						run both processes at the same time by running netcat in the background. Afterwards
+						you can run the binary in the foreground as you would normally do. To run a command
+						in the background you can append an ampersand (&) at the end of it. Also, the jobs
+						command allows us to list background processes that are currently running. We will
+						need to pipe the password to netcat beforehand like we've done in the past, too.
+					</p>
 				</div>
 
 				<pre>
 					<code>
-						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ file data5.bin
-						data5.bin: POSIX tar archive (GNU)
+						bandit20@bandit:~$ cat /etc/bandit_pass/bandit20 | netcat -l 5678 &
+						[1] 2860160
+						bandit20@bandit:~$ jobs
+						[1]+  Running                 cat /etc/bandit_pass/bandit20 | netcat -l 5678 &
+						bandit20@bandit:~$ ./suconnect 5678
+						Read: VxCazJaVykI6W36BkBU0mJTCM8rR95XT
+						Password matches, sending next password
+						NvEJF7oVjkddltPSrdKEFOllh9V1IBcq
+						bandit20@bandit:~$ jobs
+						[1]+  Done                    cat /etc/bandit_pass/bandit20 | netcat -l 5678
 					</code>
 				</pre>
 
-				<p>data5.bin happens to be a tar archive as well! Let's execute the previous command again</p>
+				<p>And there we go! An alternative solution would be the following:</p>
+
+				<p>
+					First, execute the program in the fg and then hit <code>ctrl+z</code>, which will only suspend
+					the program instead of killing it like <code>ctrl+c</code> does.
+				</p>
 
 				<pre>
 					<code>
-						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ tar -xvf data5.bin
-						data6.bin
-						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ file data6.bin
-						data6.bin: bzip2 compressed data, block size = 900k
-					</code>
-				</pre>
-
-				<p>bzip2 compressed data once more, let's keep applying the previous steps</p>
-				
-				<pre>
-					<code>
-						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ mv data6.bin data7.bz2
-						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ bzip2 -dk data7.bz2
-						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ file data7
-						data7: POSIX tar archive (GNU)
-						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ tar -xvf data7
-						data8.bin
-						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ file data8.bin
-						data8.bin: gzip compressed data, was "data9.bin" ---snip---
-						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ mv data8.bin data9.gz
-						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ gzip -dk data9.gz
-						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ ls
-						data2.gz  data3.bz2  data4  data4.gz  data5.bin  data7  data7.bz2  data9  data9.gz
-						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ file data9
-						data9: ASCII text
-					</code>
-				</pre>
-
-				<p>File data9 happens to be ASCII text, what could that be?</p>
-				
-				<pre>
-					<code>
-						bandit12@bandit:/tmp/tmp.WXPMXxpA6J$ cat data9
-						The password is wbWdlBxEir4CaE8LaPhauuOo6pwRmrDw
+						bandit20@bandit:~$ cat /etc/bandit_pass/bandit20 | netcat -l 5678
+						^Z
+						[1]+  Stopped                 cat /etc/bandit_pass/bandit20 | netcat -l 5678
 					</code>
 				</pre>
 
 				<p>
-					And finally, after lots of decompressing, we get the password for the next level!
-					Take a note of the password and make sure to delete the directory under /tmp so
-					we don't leave any unnecessary files stored in the server.
+					Then you can execute the bg command, which puts the most recently-stopped process in
+					the background. Afterwards execute the setuid binary.
 				</p>
-				
+
 				<pre>
 					<code>
-						bandit12@bandit:~$ rm -r /tmp/tmp.WXPMXxpA6J
+						bandit20@bandit:~$ bg
+						[1]+ cat /etc/bandit_pass/bandit20 | netcat -l 5678 &
+						bandit20@bandit:~$ ./suconnect 5678
+						Read: VxCazJaVykI6W36BkBU0mJTCM8rR95XT
+						Password matches, sending next password
+						NvEJF7oVjkddltPSrdKEFOllh9V1IBcq
+						bandit20@bandit:~$ jobs
+						[1]+  Done                    cat /etc/bandit_pass/bandit20 | netcat -l 5678
 					</code>
 				</pre>
 
-				<div class="explanation">
-					Explanation of the command:
-					<ul>
-						<li><code>rm</code> stands for remove and is used to remove files</li>
-						<li>
-							<code>-r</code> or <code>--recursive</code> means to delete directories and
-							their contents recursively, there is also the <code>rmdir</code> command but
-							it only works with empty directories
-						</li>
-					</ul>
-				</div>
-
-				<p>Onto level 13!</p>
+				<p>Very cool level overall! Onto the next challenge!</p>
 
 			</div>
 

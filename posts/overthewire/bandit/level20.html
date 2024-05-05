@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Bandit Level 20 Write-up</title>
+		<link rel="stylesheet" href="../../styles.css">
+		<link rel="stylesheet" href="../../../shared.css">
+	</head>
+
+	<body>
+		<div class="header">
+			<div class="profile">
+				<div class="username"><a href="../../../index.html">Lorentz0&#8209;m</a></div>
+				<div class="short-description">CTF write-ups and security related topics</div>
+			</div>
+
+			<ul>
+				<li><a href="../../../index.html">Home</a></li>
+				<li><a href="../../all_articles.html">All Posts</a></li>
+				<li><a href="../../../about.html">About</a></li>
+			</ul>
+		</div>
+
+		<div class="page-content">
+			<h1 class="title">OverTheWire Bandit Level 20 Write&#8209;up</h1>
+
+			<div class="article-info">
+				<div><img class="svg" src="../../../media/icons/calendar-days-solid.svg" alt="an icon of a calendar"> Updated: 05/05/2024</div>
+				<div>| <img class="svg" src="../../../media/icons/clock-solid.svg" alt="an icon of a clock"> 5 min read</div>
+			</div>
+
+			<hr>
+
+			<p>We are dealing with a setuid binary again:</p>
+
+			<pre>
+				<code>
+					bandit20@bandit:~$ ls -lh suconnect
+					-rwsr-x--- 1 bandit21 bandit20 16K &lt;date&gt; &lt;time&gt; suconnect
+					bandit20@bandit:~$ file suconnect
+					suconnect: setuid ELF 32-bit LSB executable ---snip---
+					bandit20@bandit:~$ ./suconnect
+					Usage: ./suconnect &lt;portnumber&gt;
+					This program will connect to the given port on localhost using TCP. If it receives
+					the correct password from the other side, the next password is transmitted back.
+				</code>
+			</pre>
+
+			<div class="notes-and-tips">
+				<strong>note:</strong> TCP stands for Transmission Control Protocol, it is a standard network protocol
+				for making connections. For more info you can read the official RFC (Request For Comments)
+				<a href="https://www.ietf.org/rfc/rfc793.txt" target="_blank" rel="noopener noreferrer" >over here</a>.
+			</div>
+
+			<p>
+				They way the program works is that it makes a connection to localhost on the port number
+				we specify. It then reads a line of text from that connection and compares it to
+				the password of our current level. If the strings match, it will transmit back the
+				credentials of the following challenge. Furthermore, to solve this level we will have to do
+				a similar process to that of <a href="./level14.html">level 14</a>, where we connected on localhost to port 30000
+				so we could receive the password. However, now the binary is the client and <i>we</i> will
+				have to act as the server by creating our own network process!
+			</p>
+
+			<p>
+				The tool we are going to use again is netcat or nc. Netcat is not restricted to sending
+				network packets. It also can listen on a port for connections. This gives us the
+				opportunity to connect an instance of netcat in a client-server relationship with
+				another process, which is exactly what we are looking for. Note that there won't be
+				any form of encryption going on as in SSL, for this use case though it isn't needed.
+			</p>
+
+			<p>
+				Ideally we would need 2 separate terminal windows to approach this problem, one for
+				having netcat in listen mode and one for executing the binary. So this is a very nice
+				opportunity to learn how to use tmux! However, you can also solve this challenge by
+				using job control alone, so I will demonstrate both ways.
+			</p>
+
+			<div>
+				<h2>TMUX (Terminal Multiplexer)</h2>
+				<p>
+					tmux  is  a terminal multiplexer: it enables a number of terminals to be created,
+					accessed, and controlled from a single screen. For our convenience it is already installed
+					in the overthewire server. To start a session simply execute <code>$ tmux</code> in your console.
+					To split your current pane in two vertical ones you can type <code>ctrl+b</code> and then <code>%</code>, or
+					<code>"</code> if you prefer horizontal terminals. To change between them press <code>ctrl+b</code> and then
+					use your arrow keys. If you want to terminate a console you can simply execute <code>$ exit</code>
+					or hit <code>ctrl+d</code>, and these are all of the basics you need to know! For more details and
+					info about the available options reference the tmux man page.
+				</p>
+			</div>
+
+			<p>
+				After you log in to level 20, start a tmux session and halve your terminal. In one console
+				execute the following command:
+			</p>
+
+			<pre>
+				<code>
+					bandit20@bandit:~$ netcat -l 5678
+				</code>
+			</pre>
+
+			<div class="explanation">
+				Explanation of the command:
+				<ul>
+					<li>
+						<code>-l</code> starts netcat in listen mode, it listens for connections on the port we
+						addressed. The port number doesn't matter in this case, you can chose any random number
+						you want. <em>Except</em> from the ports in the range 0 to 1023, since those are
+						"well-known" and you need root access for them.
+					</li>
+				</ul>
+			</div>
+
+			<div class="notes-and-tips">
+				<strong>note:</strong> The ports 0-1023 are called well-known since they are used by system processes
+				that provide widely used types of network services. For example, HTTPS which we use to
+				connect securely to websites runs on port 443, or SSH that we use for secure shell
+				connections runs by default on port 22. Therefore, for security reasons root privileges
+				are required.
+			</div>
+
+			<p>
+				In the other console execute the binary, input the exact same port you have netcat
+				listening to:
+			</p>
+
+			<pre>
+				<code>
+					bandit20@bandit:~$ ./suconnect 5678
+				</code>
+			</pre>
+
+			<p>
+				The two network processes should connect to each other without a problem. Now copy the
+				password of the current level and paste it in the netcat session so it is send over
+				to the setuid program.
+			</p>
+
+			<div style="display: flex; justify-content: center; gap: 1rem;">
+				<pre>
+					<code>
+						bandit20@bandit:~$ netcat -l 5678
+						VxCazJaVykI6W36BkBU0mJTCM8rR95XT
+						NvEJF7oVjkddltPSrdKEFOllh9V1IBcq
+					</code>
+				</pre>
+				<pre>
+					<code>
+						bandit20@bandit:~$ ./suconnect 5678
+						Password matches, sending next password
+						Read: VxCazJaVykI6W36BkBU0mJTCM8rR95XT
+					</code>
+				</pre>
+			</div>
+
+			<p>
+				Turns out our thought process was correct! After you exit you will get the following
+				output from tmux:
+			</p>
+
+			<pre>
+				<code>
+					bandit20@bandit:~$ tmux
+					[exited]
+				</code>
+			</pre>
+
+			<div>
+				<h2>Background and foreground processes (Unix job control)</h2>
+				<p>
+					In case you are trying to solve the challenge without using tmux, you can manage to
+					run both processes at the same time by running netcat in the background. Afterwards
+					you can run the binary in the foreground as you would normally do. To run a command
+					in the background you can append an ampersand (&) at the end of it. Also, the jobs
+					command allows us to list background processes that are currently running. We will
+					need to pipe the password to netcat beforehand like we've done in the past, too.
+				</p>
+			</div>
+
+			<pre>
+				<code>
+					bandit20@bandit:~$ cat /etc/bandit_pass/bandit20 | netcat -l 5678 &
+					[1] 2860160
+					bandit20@bandit:~$ jobs
+					[1]+  Running                 cat /etc/bandit_pass/bandit20 | netcat -l 5678 &
+					bandit20@bandit:~$ ./suconnect 5678
+					Read: VxCazJaVykI6W36BkBU0mJTCM8rR95XT
+					Password matches, sending next password
+					NvEJF7oVjkddltPSrdKEFOllh9V1IBcq
+					bandit20@bandit:~$ jobs
+					[1]+  Done                    cat /etc/bandit_pass/bandit20 | netcat -l 5678
+				</code>
+			</pre>
+
+			<p>And there we go! An alternative solution would be the following:</p>
+
+			<p>
+				First, execute the program in the fg and then hit <code>ctrl+z</code>, which will only suspend
+				the program instead of killing it like <code>ctrl+c</code> does.
+			</p>
+
+			<pre>
+				<code>
+					bandit20@bandit:~$ cat /etc/bandit_pass/bandit20 | netcat -l 5678
+					^Z
+					[1]+  Stopped                 cat /etc/bandit_pass/bandit20 | netcat -l 5678
+				</code>
+			</pre>
+
+			<p>
+				Then you can execute the bg command, which puts the most recently-stopped process in
+				the background. Afterwards execute the setuid binary.
+			</p>
+
+			<pre>
+				<code>
+					bandit20@bandit:~$ bg
+					[1]+ cat /etc/bandit_pass/bandit20 | netcat -l 5678 &
+					bandit20@bandit:~$ ./suconnect 5678
+					Read: VxCazJaVykI6W36BkBU0mJTCM8rR95XT
+					Password matches, sending next password
+					NvEJF7oVjkddltPSrdKEFOllh9V1IBcq
+					bandit20@bandit:~$ jobs
+					[1]+  Done                    cat /etc/bandit_pass/bandit20 | netcat -l 5678
+				</code>
+			</pre>
+
+			<p>Very cool level overall! Onto the next challenge!</p>
+
+			<hr>
+
+			<div class="level-links">
+				<a href="./level19.html">&lt;&#8209;Previous Level</a>
+				<a href="../../../index.html">Home&#8209;&gt;</a>
+			</div>
+		</div>
+
+		<div class="footer">
+			Copyright &#169; 2024 Lorentz0&#8209;m 
+		</div>
+	</body>
+</html>
