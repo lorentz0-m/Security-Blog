@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Bandit Level 22 Write-up</title>
+		<link rel="stylesheet" href="../../styles.css">
+		<link rel="stylesheet" href="../../../shared.css">
+	</head>
+
+	<body>
+		<div class="header">
+			<div class="profile">
+				<div class="username"><a href="../../../index.html">Lorentz0&#8209;m</a></div>
+				<div class="short-description">CTF write-ups and security related topics</div>
+			</div>
+
+			<ul>
+				<li><a href="../../../index.html">Home</a></li>
+				<li><a href="../../all_articles.html">All Posts</a></li>
+				<li><a href="../../../about.html">About</a></li>
+			</ul>
+		</div>
+
+		<div class="page-content">
+			<h1 class="title">OverTheWire Bandit Level 22 Write&#8209;up</h1>
+
+			<div class="article-info">
+				<div><img class="svg" src="../../../media/icons/calendar-days-solid.svg" alt="an icon of a calendar"> Updated: 11/05/2024</div>
+				<div>| <img class="svg" src="../../../media/icons/clock-solid.svg" alt="an icon of a clock"> 1.5 min read</div>
+			</div>
+
+			<hr>
+
+			<p>This time we are interested in cronjob_bandit23</p>
+
+			<pre>
+				<code>
+					bandit22@bandit:/etc/cron.d$ cat cronjob_bandit23
+					@reboot bandit23 /usr/bin/cronjob_bandit23.sh  &> /dev/null
+					* * * * * bandit23 /usr/bin/cronjob_bandit23.sh  &> /dev/null
+					bandit22@bandit:/etc/cron.d$ cat /usr/bin/cronjob_bandit23.sh | nl -b a
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1	#!/bin/bash
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3	myname=$(whoami)
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4	mytarget=$(echo I am user $myname | md5sum | cut -d ' ' -f 1)
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;6	echo "Copying passwordfile /etc/bandit_pass/$myname to /tmp/$mytarget"
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;7
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;8	cat /etc/bandit_pass/$myname > /tmp/$mytarget
+				</code>
+			</pre>
+
+			<div class="explanation">
+				Explanation of the command:
+				<ul>
+					<li>nl is a useful command that numbers lines of files, hence the name nl</li>
+					<li>
+						<code>-b a</code> specifies a style for the body lines, where a means number
+						all lines (even empty ones)
+					</li>
+				</ul>
+			</div>
+
+			<div class="explanation">
+				The script in this challenge is very similar to the previous one. However, the name of
+				the file that stores the password is derived from your username, instead
+				of being a hardcoded value. You can see in line 3 we first get the username with the
+				whoami command, (in this case we know its "bandit23") and then execute the command on
+				line 4 to specify our target. Where:
+				<ul>
+					<li>md5sum creates a hash of our string using MD5 or the message-digest algorithm.</li>
+					<li>
+						<code>cut -d ' ' -f -1</code> uses the cut command to split the output of md5sum
+						with spaces as the delimiter, where <code>-f -1</code> selects the first field which is
+						our hashed string
+					</li>
+				</ul>
+			</div>
+
+			<p>To replicate the command ourselves and get the password we have:</p>
+
+			<pre>
+				<code>
+					bandit22@bandit:/etc/cron.d$ echo "I am user bandit23" | md5sum | cut -d ' ' -f 1
+					8ca319486bfbbc3663ea0fbe81326349
+					bandit22@bandit:/etc/cron.d$ cat /tmp/8ca319486bfbbc3663ea0fbe81326349
+					QYw0Y2aiA672PsMmh9puTQuhoz8SyR2G
+				</code>
+			</pre>
+
+			<p>Or this simple one-liner:</p>
+
+			<pre>
+				<code>
+					bandit22@bandit:/etc/cron.d$ cat /tmp/$(echo "I am user bandit23" | md5sum | cut -d ' ' -f 1)
+					QYw0Y2aiA672PsMmh9puTQuhoz8SyR2G
+				</code>
+			</pre>
+
+			<hr>
+
+			<div class="level-links">
+				<a href="./level21.html">&lt;&#8209;Previous Level</a>
+				<a href="../../../index.html">Home&#8209;&gt;</a>
+			</div>
+		</div>
+
+		<div class="footer">
+			Copyright &#169; 2024 Lorentz0&#8209;m 
+		</div>
+	</body>
+</html>
