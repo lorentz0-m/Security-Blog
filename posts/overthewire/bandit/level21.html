@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Bandit Level 21 Write-up</title>
+		<link rel="stylesheet" href="../../styles.css">
+		<link rel="stylesheet" href="../../../shared.css">
+	</head>
+
+	<body>
+		<div class="header">
+			<div class="profile">
+				<div class="username"><a href="../../../index.html">Lorentz0&#8209;m</a></div>
+				<div class="short-description">CTF write-ups and security related topics</div>
+			</div>
+
+			<ul>
+				<li><a href="../../../index.html">Home</a></li>
+				<li><a href="../../all_articles.html">All Posts</a></li>
+				<li><a href="../../../about.html">About</a></li>
+			</ul>
+		</div>
+
+		<div class="page-content">
+			<h1 class="title">OverTheWire Bandit Level 21 Write&#8209;up</h1>
+
+			<div class="article-info">
+				<div><img class="svg" src="../../../media/icons/calendar-days-solid.svg" alt="an icon of a calendar"> Updated: 11/05/2024</div>
+				<div>| <img class="svg" src="../../../media/icons/clock-solid.svg" alt="an icon of a clock"> 2 min read</div>
+			</div>
+
+			<hr>
+
+			<p>
+				In this level we know that a program is running automatically at regular intervals
+				from cron, the time-based job scheduler. The cron daemon (deamon means a process
+				that runs in the background), handles the task of executing scripts or commands
+				whenever you assign it to do so, saving you time from running them manually.
+				Normally each user has a unique crontab file, which includes cronjobs that user
+				might have. You can access the crontab by executing <code>$ crontab -e</code>. In this
+				case though we don't have the permissions to do so:
+			</p>
+
+			<pre>
+				<code>
+					bandit21@bandit:~$ crontab -e
+					crontabs/bandit21/: fdopen: Permission denied
+				</code>
+			</pre>
+
+			<p>So we will resort to our provided hint: look under "/etc/cron.d/":</p>
+
+			<pre>
+				<code>
+					bandit21@bandit:~$ cd /etc/cron.d
+					bandit21@bandit:/etc/cron.d$ ls -lah
+					total 56K
+					drwxr-xr-x   2 root root 4.0K Oct  5 06:20 .
+					drwxr-xr-x 106 root root  12K Oct  5 06:20 ..
+					-rw-r--r--   1 root root   62 Oct  5 06:19 cronjob_bandit15_root
+					-rw-r--r--   1 root root   62 Oct  5 06:19 cronjob_bandit17_root
+					-rw-r--r--   1 root root  120 Oct  5 06:19 cronjob_bandit22
+					-rw-r--r--   1 root root  122 Oct  5 06:19 cronjob_bandit23
+					-rw-r--r--   1 root root  120 Oct  5 06:19 cronjob_bandit24
+					-rw-r--r--   1 root root   62 Oct  5 06:19 cronjob_bandit25_root
+					-rw-r--r--   1 root root  201 Jan  8  2022 e2scrub_all
+					-rwx------   1 root root   52 Oct  5 06:20 otw-tmp-dir
+					-rw-r--r--   1 root root  102 Mar 23  2022 .placeholder
+					-rw-r--r--   1 root root  396 Feb  2  2021 sysstat
+				</code>
+			</pre>
+
+			<p>
+				You can see numerous cronjob files, for the moment we are only interested
+				in cronjob_bandit22.
+			</p>
+
+			<pre>
+				<code>
+					bandit21@bandit:/etc/cron.d$ cat cronjob_bandit22
+					@reboot bandit22 /usr/bin/cronjob_bandit22.sh &> /dev/null
+					* * * * * bandit22 /usr/bin/cronjob_bandit22.sh &> /dev/null
+				</code>
+			</pre>
+
+			<div class="notes-and-tips">
+				<strong>note:</strong> you can point out bash scripts by looking at the .sh extension. However, Linux
+				usually doesn't rely on file names, so a png image doesn't necessarily have to end
+				with .png. Except some situations like compressed or decompressed files, where
+				the file extension is important.
+			</div>
+
+			<div class="notes-and-tips">
+				<strong>tip:</strong> remember back in <a href="./level06.html">level 6</a> where we used
+				<code>2> /dev/null</code> to redirect all standard error output to /dev/null? The &>
+				redirection shown here discards both the stdout <em>and</em> stderr streams to /dev/null at the same.
+			</div>
+
+			<div class="explanation">
+				From the content of the file we can figure out that the /usr/bin/cronjob_bandit22.sh
+				script is executed on two occasions:
+				<ul>
+					<li>
+						on every reboot, indicated by @reboot
+					</li>
+					<li>
+						every minute (M), every hour (H), every day of the month (DOM), every month of the year
+						(MON), and every day of the week (DOW). So pretty much every minute. This is designated
+						by the five asterisks "* * * * *", which are part of the notation that cron uses to
+						determine time intervals. For more details run <code>$ man 5 crontab</code>.
+					</li>
+				</ul>
+			</div>
+
+			<p>Let's see the contents of the script:</p>
+
+			<pre>
+				<code>
+					bandit21@bandit:/etc/cron.d$ cat /usr/bin/cronjob_bandit22.sh
+					#!/bin/bash
+					chmod 644 /tmp/t7O6lds9S0RqQh9aMcz6ShpAoZKF7fgv
+					cat /etc/bandit_pass/bandit22 > /tmp/t7O6lds9S0RqQh9aMcz6ShpAoZKF7fgv
+				</code>
+			</pre>
+
+			<p>
+				It seems that a file under tmp has its permissions changed so that any user can read it,
+				and afterwards the content of the file is replaced by the password of bandit22. Which
+				is exactly what we were looking for!
+			</p>
+
+			<pre>
+				<code>
+					bandit21@bandit:/etc/cron.d$ cat /tmp/t7O6lds9S0RqQh9aMcz6ShpAoZKF7fgv
+					WdDozAdTM2z9DiFEQ2mGlwngMfj4EZff
+				</code>
+			</pre>
+
+			<p>Done!</p>
+
+			<hr>
+
+			<div class="level-links">
+				<a href="./level20.html">&lt;&#8209;Previous Level</a>
+				<a href="./level22.html">Next Level&#8209;&gt;</a>
+			</div>
+		</div>
+
+		<div class="footer">
+			Copyright &#169; 2024 Lorentz0&#8209;m 
+		</div>
+	</body>
+</html>
