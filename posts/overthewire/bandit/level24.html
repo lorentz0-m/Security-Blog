@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Bandit Level 24 Write-up</title>
+		<link rel="stylesheet" href="../../styles.css">
+		<link rel="stylesheet" href="../../../shared.css">
+	</head>
+
+	<body>
+		<div class="header">
+			<div class="profile">
+				<div class="username"><a href="../../../index.html">Lorentz0&#8209;m</a></div>
+				<div class="short-description">CTF write-ups and security related topics</div>
+			</div>
+
+			<ul>
+				<li><a href="../../../index.html">Home</a></li>
+				<li><a href="../../all_articles.html">All Posts</a></li>
+				<li><a href="../../../about.html">About</a></li>
+			</ul>
+		</div>
+
+		<div class="page-content">
+			<h1 class="title">OverTheWire Bandit Level 24 Write&#8209;up</h1>
+
+			<div class="article-info">
+				<div><img class="svg" src="../../../media/icons/calendar-days-solid.svg" alt="an icon of a calendar"> Updated: 31/05/2024</div>
+				<div>| <img class="svg" src="../../../media/icons/clock-solid.svg" alt="an icon of a clock"> 1.5 min read</div>
+			</div>
+
+			<hr>
+
+			<p>
+				In this level we know that a daemon is listening on port 30002. To get the credentials for bandit25
+				we need to send the password of our current level combined with a 4-digit pincode. The only way to
+				retrieve the pincode is by brute-forcing the entire 10 thousand available combinations (10^4, the
+				decimal system is base 10 and there are 4 available digits). Keep in mind that creating a new connection
+				with the daemon each time will make the process very slow, so it's better to avoid it.
+			</p>
+
+			<p>
+				The tool we are going to use once more is netcat! To execute the required number of attempts and
+				complete the brute-force we are going to use a for-loop. For-loops run for a set amount
+				of times and can execute a command we specify over and over again. Normally we would begin by
+				trying all posible combinations from 0000 all the way up to 9999. However, for some reason netcat
+				stalls our connection after a certain number of attempts, so we will go through the combinations
+				in reverse order. Applying the previous we get:
+			</p>
+
+			<pre>
+				<code>
+					bandit24@bandit:~$ for i in {9999..0000}; do echo "VAfGXJ1PBSsPSnvsjI8p759leLZ9GGar $i"; done | nc localhost 30002
+					I am the pincode checker for user bandit25. Please enter the password for user bandit24 and the secret pincode on a single line, separated by a space.
+					Wrong! Please enter the correct pincode. Try again.
+					Wrong! Please enter the correct pincode. Try again.
+					---snip---
+					Wrong! Please enter the correct pincode. Try again.
+					Wrong! Please enter the correct pincode. Try again.
+					Correct!
+					The password of user bandit25 is p7TaowMYrmu23Ol8hiZh9UvD0O9hpx8d
+					Exiting.
+				</code>
+			</pre>
+
+			<p>Level 24 done!</p>
+
+			<hr>
+
+			<div class="level-links">
+				<a href="./level23.html">&lt;&#8209;Previous Level</a>
+				<a href="../../../index.html">Home&#8209;&gt;</a>
+			</div>
+		</div>
+
+		<div class="footer">
+			Copyright &#169; 2024 Lorentz0&#8209;m 
+		</div>
+	</body>
+</html>
