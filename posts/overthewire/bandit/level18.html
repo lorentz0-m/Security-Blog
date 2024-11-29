@@ -27,7 +27,7 @@
 			<h1 class="title">OverTheWire Bandit Level 18 Write&#8209;up</h1>
 
 			<div class="article-info">
-				<div><img class="svg" src="../../../media/icons/calendar-days-solid.svg" alt="an icon of a calendar"> Updated: 30/04/2024</div>
+				<div><img class="svg" src="../../../media/icons/calendar-days-solid.svg" alt="an icon of a calendar"> Updated: 29/11/2024</div>
 				<div>| <img class="svg" src="../../../media/icons/clock-solid.svg" alt="an icon of a clock"> 1 min read</div>
 			</div>
 
@@ -36,9 +36,9 @@
 			<p>
 				The password for level 19 is stored in a readme file inside ~, the same way it was in
 				<a href="./level00.html">level 0</a>. However, the .bashrc script of bandit18 has been modified so it logs us out
-				every time we log in with SSH.  To go around this issue we can use the "command" option
-				of the ssh utility, which speficies a command to be executed on the remote host. In this
-				way we can cat the readme file in our console without having to log in.
+				every time we log in with SSH.  To go around this issue we will append a command at the end
+				of the ssh utility. In this way, we can speficy a command to be executed on the remote host,
+				for example <code>cat readme</code>, and retrive the contents of the targeted file!
 			</p>
 
 			<pre>
@@ -54,7 +54,7 @@
 					More information on http://www.overthewire.org/wargames
 
 					bandit18@bandit.labs.overthewire.org's password:
-					awhqfNnAbc1naukrpqDYcF95h7HoMTrC
+					cGWpMaKXVwDUNgPAVJbWYuGHVn9zl3j8
 				</code>
 			</pre>
 

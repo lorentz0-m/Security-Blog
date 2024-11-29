@@ -27,7 +27,7 @@
 			<h1 class="title">OverTheWire Bandit Level 20 Write&#8209;up</h1>
 
 			<div class="article-info">
-				<div><img class="svg" src="../../../media/icons/calendar-days-solid.svg" alt="an icon of a calendar"> Updated: 05/05/2024</div>
+				<div><img class="svg" src="../../../media/icons/calendar-days-solid.svg" alt="an icon of a calendar"> Updated: 29/11/2024</div>
 				<div>| <img class="svg" src="../../../media/icons/clock-solid.svg" alt="an icon of a clock"> 5 min read</div>
 			</div>
 
@@ -100,7 +100,7 @@
 
 			<pre>
 				<code>
-					bandit20@bandit:~$ netcat -l 5678
+					bandit20@bandit:~$ netcat -l 1337
 				</code>
 			</pre>
 
@@ -131,7 +131,7 @@
 
 			<pre>
 				<code>
-					bandit20@bandit:~$ ./suconnect 5678
+					bandit20@bandit:~$ ./suconnect 1337
 				</code>
 			</pre>
 
@@ -144,16 +144,16 @@
 			<div style="display: flex; justify-content: center; gap: 1rem;">
 				<pre>
 					<code>
-						bandit20@bandit:~$ netcat -l 5678
-						VxCazJaVykI6W36BkBU0mJTCM8rR95XT
-						NvEJF7oVjkddltPSrdKEFOllh9V1IBcq
+						bandit20@bandit:~$ netcat -l 1337
+						0qXahG8ZjOVMN9Ghs7iOWsCfZyXOUbYO
+						EeoULMCra2q0dSkYj561DX7s1CpBuOBt
 					</code>
 				</pre>
 				<pre>
 					<code>
-						bandit20@bandit:~$ ./suconnect 5678
+						bandit20@bandit:~$ ./suconnect 1337
 						Password matches, sending next password
-						Read: VxCazJaVykI6W36BkBU0mJTCM8rR95XT
+						Read: 0qXahG8ZjOVMN9Ghs7iOWsCfZyXOUbYO
 					</code>
 				</pre>
 			</div>
@@ -184,16 +184,16 @@
 
 			<pre>
 				<code>
-					bandit20@bandit:~$ cat /etc/bandit_pass/bandit20 | netcat -l 5678 &
+					bandit20@bandit:~$ cat /etc/bandit_pass/bandit20 | netcat -l 1337 &
 					[1] 2860160
 					bandit20@bandit:~$ jobs
-					[1]+  Running                 cat /etc/bandit_pass/bandit20 | netcat -l 5678 &
-					bandit20@bandit:~$ ./suconnect 5678
-					Read: VxCazJaVykI6W36BkBU0mJTCM8rR95XT
+					[1]+  Running                 cat /etc/bandit_pass/bandit20 | netcat -l 1337 &
+					bandit20@bandit:~$ ./suconnect 1337
+					Read: 0qXahG8ZjOVMN9Ghs7iOWsCfZyXOUbYO
 					Password matches, sending next password
-					NvEJF7oVjkddltPSrdKEFOllh9V1IBcq
+					EeoULMCra2q0dSkYj561DX7s1CpBuOBt
 					bandit20@bandit:~$ jobs
-					[1]+  Done                    cat /etc/bandit_pass/bandit20 | netcat -l 5678
+					[1]+  Done cat /etc/bandit_pass/bandit20 | netcat -l 1337
 				</code>
 			</pre>
 
@@ -206,9 +206,9 @@
 
 			<pre>
 				<code>
-					bandit20@bandit:~$ cat /etc/bandit_pass/bandit20 | netcat -l 5678
+					bandit20@bandit:~$ cat /etc/bandit_pass/bandit20 | netcat -l 1337
 					^Z
-					[1]+  Stopped                 cat /etc/bandit_pass/bandit20 | netcat -l 5678
+					[1]+  Stopped                 cat /etc/bandit_pass/bandit20 | netcat -l 1337
 				</code>
 			</pre>
 
@@ -220,13 +220,13 @@
 			<pre>
 				<code>
 					bandit20@bandit:~$ bg
-					[1]+ cat /etc/bandit_pass/bandit20 | netcat -l 5678 &
-					bandit20@bandit:~$ ./suconnect 5678
-					Read: VxCazJaVykI6W36BkBU0mJTCM8rR95XT
+					[1]+ cat /etc/bandit_pass/bandit20 | netcat -l 1337 &
+					bandit20@bandit:~$ ./suconnect 1337
+					Read: 0qXahG8ZjOVMN9Ghs7iOWsCfZyXOUbYO
 					Password matches, sending next password
-					NvEJF7oVjkddltPSrdKEFOllh9V1IBcq
+					EeoULMCra2q0dSkYj561DX7s1CpBuOBt
 					bandit20@bandit:~$ jobs
-					[1]+  Done                    cat /etc/bandit_pass/bandit20 | netcat -l 5678
+					[1]+  Done                    cat /etc/bandit_pass/bandit20 | netcat -l 1337
 				</code>
 			</pre>
 
