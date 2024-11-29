@@ -27,7 +27,7 @@
 			<h1 class="title">OverTheWire Bandit Level 22 Write&#8209;up</h1>
 
 			<div class="article-info">
-				<div><img class="svg" src="../../../media/icons/calendar-days-solid.svg" alt="an icon of a calendar"> Updated: 11/05/2024</div>
+				<div><img class="svg" src="../../../media/icons/calendar-days-solid.svg" alt="an icon of a calendar"> Updated: 29/11/2024</div>
 				<div>| <img class="svg" src="../../../media/icons/clock-solid.svg" alt="an icon of a clock"> 1.5 min read</div>
 			</div>
 
@@ -86,7 +86,7 @@
 					bandit22@bandit:/etc/cron.d$ echo "I am user bandit23" | md5sum | cut -d ' ' -f 1
 					8ca319486bfbbc3663ea0fbe81326349
 					bandit22@bandit:/etc/cron.d$ cat /tmp/8ca319486bfbbc3663ea0fbe81326349
-					QYw0Y2aiA672PsMmh9puTQuhoz8SyR2G
+					0Zf11ioIjMVN551jX3CmStKLYqjk54Ga
 				</code>
 			</pre>
 
@@ -95,7 +95,7 @@
 			<pre>
 				<code>
 					bandit22@bandit:/etc/cron.d$ cat /tmp/$(echo "I am user bandit23" | md5sum | cut -d ' ' -f 1)
-					QYw0Y2aiA672PsMmh9puTQuhoz8SyR2G
+					0Zf11ioIjMVN551jX3CmStKLYqjk54Ga
 				</code>
 			</pre>
 
